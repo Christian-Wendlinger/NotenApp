@@ -3,4 +3,15 @@
     <string name="notenHalbjahrText">Halbjahr: 12/1</string>
     <string name="notenSchnittText">Schnitt: 0,00</string>
     <string name="notenAbischnittText">Abi Note: 0,0</string>
+    <string name="fachListeFachname">Fachname</string>
+    <string name="fachListeSchnitt">Schnitt: 0,00</string>
+    <string name="notenListeHeadline">Notenart</string>
+    <string name="notenListeDatum">00.00.0000</string>
+    <string name="notenListeNote">00,00</string>
+    <string name="notenListeBemerkung">Bemerkung</string>
+    <string name="addNeueNoteTitel">Fach</string>
+    <string name="inputDatumHint">Datum</string>
+    <string name="inputNoteHint">Note</string>
+    <string name="inputArtHint">Art</string>
+    <string name="inputBemerkungHint">Bemerkung</string>
 </resources>

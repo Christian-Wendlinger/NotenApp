@@ -19,36 +19,39 @@
 
             <TextView
                 android:id="@+id/notenHalbjahrText"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
-                android:layout_marginLeft="15dp"
                 android:layout_marginTop="15dp"
+                android:layout_marginEnd="30dp"
                 android:text="@string/notenHalbjahrText"
                 android:textColor="@color/black"
                 android:textSize="16sp"
+                app:layout_constraintEnd_toStartOf="@+id/notenSettingsIcon"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/notenSchnittText"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:text="@string/notenSchnittText"
                 android:textColor="@color/black"
                 android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="@+id/notenHalbjahrText"
                 app:layout_constraintStart_toStartOf="@+id/notenHalbjahrText"
                 app:layout_constraintTop_toBottomOf="@+id/notenHalbjahrText" />
 
             <TextView
                 android:id="@+id/notenAbischnittText"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:text="@string/notenAbischnittText"
                 android:textColor="@color/black"
                 android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="@+id/notenSchnittText"
                 app:layout_constraintStart_toStartOf="@+id/notenSchnittText"
                 app:layout_constraintTop_toBottomOf="@+id/notenSchnittText" />
 
