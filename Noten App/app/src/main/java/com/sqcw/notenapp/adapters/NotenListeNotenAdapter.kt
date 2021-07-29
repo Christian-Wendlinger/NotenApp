@@ -12,10 +12,11 @@ import com.sqcw.notenapp.R
 import com.sqcw.notenapp.data.entities.Note
 
 class NotenListeNotenAdapter internal constructor(
-    context: Context?
+    context: Context?,
+    noten: List<Note>
 ) :
     RecyclerView.Adapter<NotenListeNotenAdapter.ViewHolder>() {
-    private var items: List<Note> = emptyList()
+    private var items: List<Note> = noten
     private val inflater: LayoutInflater = LayoutInflater.from(context)
 
     // inflates the cell layout from xml when needed
@@ -63,12 +64,6 @@ class NotenListeNotenAdapter internal constructor(
     // total number of cells
     override fun getItemCount(): Int {
         return items.size
-    }
-
-    // update data
-    fun setData(noten: List<Note>) {
-        items = noten
-        notifyDataSetChanged()
     }
 
     // stores and recycles views as they are scrolled off screen

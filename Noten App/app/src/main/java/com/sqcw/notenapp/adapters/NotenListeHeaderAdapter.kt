@@ -10,11 +10,12 @@ import com.sqcw.notenapp.R
 
 class NotenListeHeaderAdapter internal constructor(
     context: Context?,
-    title: String
+    title: String,
+    schnitt: Float
 ) :
     RecyclerView.Adapter<NotenListeHeaderAdapter.ViewHolder>() {
     private val title: String = title
-    private var schnitt: Float = 0f
+    private var schnitt: Float = schnitt
     private val inflater: LayoutInflater = LayoutInflater.from(context)
 
     // inflates the cell layout from xml when needed
@@ -41,11 +42,6 @@ class NotenListeHeaderAdapter internal constructor(
     // total number of cells
     override fun getItemCount(): Int {
         return 1
-    }
-
-    fun setSchnitt(neuerSchnitt: Float) {
-        schnitt = neuerSchnitt
-        notifyDataSetChanged()
     }
 
     // stores and recycles views as they are scrolled off screen

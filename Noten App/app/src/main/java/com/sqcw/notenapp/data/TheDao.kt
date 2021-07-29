@@ -1,6 +1,5 @@
 package com.sqcw.notenapp.data
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.sqcw.notenapp.data.entities.Fach
 import com.sqcw.notenapp.data.entities.MetaInformation
@@ -19,7 +18,7 @@ interface TheDao {
 
     @Transaction
     @Query("SELECT * FROM metainformation WHERE id = 0")
-    fun readMetaInformation(): LiveData<List<MetaInformation>>
+    suspend fun readMetaInformation(): List<MetaInformation>
 
 
     // Fach
@@ -35,7 +34,7 @@ interface TheDao {
     // read specific Fach
     @Transaction
     @Query("SELECT * FROM fach WHERE id = :id")
-    fun readFach(id: Int): LiveData<List<Fach>>
+    suspend fun readFach(id: Int): List<Fach>
 
 
     // Note
@@ -51,17 +50,17 @@ interface TheDao {
     // read specific Note
     @Transaction
     @Query("SELECT * FROM note WHERE id = :id")
-    fun readNote(id: Int): LiveData<List<Note>>
+    suspend fun readNote(id: Int): List<Note>
 
 
     // Relationen
     // Fach und Noten auslesen
     @Transaction
     @Query("SELECT * FROM fach WHERE id = :fachId")
-    fun getFachMitNoten(fachId: Int): LiveData<List<FachAndNoten>>
+    suspend fun getFachMitNoten(fachId: Int): List<FachAndNoten>
 
     // Alle Fächer für ein Halbjahr auslesen
     @Transaction
     @Query("SELECT * FROM metainformation WHERE halbjahr = :halbjahr")
-    fun getHalbjahrMitFaecher(halbjahr: String): LiveData<List<MetaInformationAndFaecher>>
+    suspend fun getHalbjahrMitFaecher(halbjahr: String): List<MetaInformationAndFaecher>
 }

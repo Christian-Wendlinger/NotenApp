@@ -3,14 +3,12 @@ package com.sqcw.notenapp
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelStoreOwner
-import com.sqcw.notenapp.data.TheViewModel
+import androidx.lifecycle.lifecycleScope
+import com.sqcw.notenapp.data.TheDao
+import com.sqcw.notenapp.data.TheDatabase
 import com.sqcw.notenapp.data.entities.Note
-import com.sqcw.notenapp.util.updateFachInformation
-import com.sqcw.notenapp.util.updateHalbjahrInformation
+import com.sqcw.notenapp.util.updateDb
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -23,9 +21,58 @@ class AddNeueNote : AppCompatActivity() {
         setContentView(R.layout.activity_neue_note)
 
         // initialize Database
-        val db = ViewModelProvider(this).get(TheViewModel::class.java)
+        val db = TheDatabase.getInstance(this).dao()
+        lifecycleScope.launch {
+            init(db)
+        }
+    }
 
-        // initialize Dropdown values
+    private suspend fun init(db: TheDao) {
+        val fachListe = db.readFach(intent.extras!!.getInt("id"))
+
+        // This should never crash!
+        val fach = fachListe[0]
+
+        initializeDropdown()
+
+        // set title
+        findViewById<TextView>(R.id.neueNoteTitel).apply { text = fach.name }
+        // set Gewicht as default to 1
+        findViewById<EditText>(R.id.neueNoteGewicht).apply { setText("1") }
+        // set Date as default to current Date
+        findViewById<EditText>(R.id.neueNoteDatum).apply {
+            val date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(Date())
+            setText(date)
+        }
+
+
+        // initialize close
+        findViewById<ImageView>(R.id.neueNoteCloseIcon).apply { setOnClickListener { finish() } }
+
+        // initialize Add
+        findViewById<ImageView>(R.id.neueNoteAccept).apply {
+            setOnClickListener {
+                val note = parseInput() ?: return@setOnClickListener
+
+                lifecycleScope.launch {
+                    db.insertNote(note)
+                    updateDb(context, fach, fach.halbjahr)
+
+                    // close activity
+                    finish()
+                    // notify user about change and close Activity
+                    Toast.makeText(
+                        applicationContext,
+                        "Neue Note in ${fach.name} hinzugefügt!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+    }
+
+    // set Dropdown values
+    private fun initializeDropdown() {
         findViewById<AutoCompleteTextView>(R.id.neueNoteArt).apply {
             keyListener = null
             setAdapter(
@@ -36,83 +83,6 @@ class AddNeueNote : AppCompatActivity() {
                 )
             )
             setText(notenArten[0], false)
-        }
-
-        // close Icon
-        findViewById<ImageView>(R.id.neueNoteCloseIcon).apply {
-            setOnClickListener { finish() }
-        }
-
-        // initialize values
-        // title
-        findViewById<TextView>(R.id.neueNoteTitel).apply {
-            val id: Int = intent.extras!!.getInt("id")
-
-            db.readFach(id).observe(context as LifecycleOwner, Observer { fachListe ->
-                if (fachListe.isEmpty()) return@Observer
-
-                val fach = fachListe[0]
-                text = fach.name
-            })
-        }
-
-        // set Gewicht to 1 as standard
-        findViewById<EditText>(R.id.neueNoteGewicht).apply {
-            setText("1")
-        }
-
-        // set Date to today
-        findViewById<EditText>(R.id.neueNoteDatum).apply {
-            val date = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(Date())
-            setText(date)
-        }
-
-        // initialize Listener to add new Note
-        findViewById<ImageView>(R.id.neueNoteAccept).apply {
-            setOnClickListener {
-                val note = parseInput()
-                if (note != null) {
-                    db.insertNote(note)
-
-                    // how user that Note was inserted and update Fachinformation
-                    db.readFach(intent.extras!!.getInt("id"))
-                        .observe(context as LifecycleOwner, Observer { fachListe ->
-                            if (fachListe.isEmpty()) return@Observer
-
-                            val fach = fachListe[0]
-
-                            // update Fach information and store new information to database
-                            updateFachInformation(
-                                context as ViewModelStoreOwner,
-                                context as LifecycleOwner,
-                                fach.id
-                            )
-
-                            // update Halbjahr Information
-                            db.readMetaInformation()
-                                .observe(context as LifecycleOwner, Observer { data ->
-                                    if (data.isEmpty()) return@Observer
-
-                                    val metaInformation = data[0]
-                                    updateHalbjahrInformation(
-                                        context as ViewModelStoreOwner,
-                                        context as LifecycleOwner,
-                                        metaInformation.halbjahr
-                                    )
-                                })
-                        })
-
-                    // notify user about update and close activity
-                    rootView.findViewById<TextView>(R.id.neueNoteTitel).also {
-                        Toast.makeText(
-                            applicationContext,
-                            "Neue Note für ${it.text} eingefügt!",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                    finish()
-                }
-            }
         }
     }
 
