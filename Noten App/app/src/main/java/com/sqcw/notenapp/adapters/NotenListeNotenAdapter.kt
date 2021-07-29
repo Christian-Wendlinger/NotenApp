@@ -1,11 +1,13 @@
 package com.sqcw.notenapp.adapters
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.sqcw.notenapp.ChangeNote
 import com.sqcw.notenapp.R
 import com.sqcw.notenapp.data.entities.Note
 
@@ -39,12 +41,21 @@ class NotenListeNotenAdapter internal constructor(
 
             // change Punktzahl
             findViewById<TextView>(R.id.notenListeNote).apply {
-                text = note.punktzahl.toString()
+                text = "${if (note.gewicht > 1) "(x${note.gewicht})" else ""}    ${note.punktzahl}"
             }
 
             // change Bemerkung
             findViewById<TextView>(R.id.notenListeBemerkung).apply {
                 text = note.bemerkung
+            }
+
+            // Listener
+            setOnLongClickListener {
+                val intent = Intent(context, ChangeNote::class.java)
+                intent.putExtra("id", note.id)
+                context.startActivity(intent)
+
+                return@setOnLongClickListener true
             }
         }
     }

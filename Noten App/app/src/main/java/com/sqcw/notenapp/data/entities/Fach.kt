@@ -6,13 +6,15 @@ import androidx.room.PrimaryKey
 @Entity
 data class Fach(
     @PrimaryKey(autoGenerate = true)
-    val id: Int,
-    val name: String,
-    val farbe: String,
-    val fachart: String,
-    val gewicht: Int,
-    val halbjahr: String,
-    val schnitt: Float,
-    val endnote: Int,
-    val beinhaltetNoten: Boolean
+    var id: Int,
+    var name: String,
+    var farbe: String,
+    var fachart: String,
+    var gewicht: Int,
+    var halbjahr: String,
+    var klausurenSchnitt: Float,
+    var sonstigeSchnitt: Float,
+    var schnitt: Float,
+    var endnote: Int,
+    var beinhaltetNoten: Boolean
 )

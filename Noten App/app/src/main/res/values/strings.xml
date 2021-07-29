@@ -15,4 +15,5 @@
     <string name="inputArtHint">Art</string>
     <string name="inputBemerkungHint">Bemerkung</string>
     <string name="fachListeSchnitt">N/A</string>
+    <string name="inputGewichtHint">Gewicht</string>
 </resources>

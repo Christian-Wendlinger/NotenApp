@@ -51,12 +51,12 @@ class FachListeAdapter internal constructor(
 
             // set Endnote
             findViewById<TextView>(R.id.fachListeEndnote).apply {
-                text = "${if (fach.beinhaltetNoten) fach.endnote else "NA"} Punkte"
+                text = "${if (fach.beinhaltetNoten) fach.endnote else "N/A"} Punkte"
             }
 
             // set Schnitt
             findViewById<TextView>(R.id.fachListeSchnitt).apply {
-                text = "${if (fach.beinhaltetNoten) fach.schnitt else "NA"}"
+                text = if (fach.beinhaltetNoten) "%.2f".format(fach.schnitt) else "N/A"
             }
 
             // set backgroundColor of Card
@@ -84,40 +84,42 @@ class FachListeAdapter internal constructor(
                 layoutManager = LinearLayoutManager(context)
 
                 // create all adapters and data
+                adapter = ConcatAdapter()
+
                 val headlineKlausuren = NotenListeHeaderAdapter(context, "Klausuren")
                 val headlineNormaleNoten = NotenListeHeaderAdapter(context, "Normale Noten")
                 val klausuren = NotenListeNotenAdapter(context)
                 val normaleNoten = NotenListeNotenAdapter(context)
-                var adapterList =
-                    mutableListOf(headlineKlausuren, klausuren, headlineNormaleNoten, normaleNoten)
-                adapter =
-                    ConcatAdapter(adapterList)
 
                 // update noten Data
                 // read Data from database
                 db.getFachMitNoten(fach.id)
                     .observe(context as LifecycleOwner, { data ->
-                        val filteredData = data[0].noten.filter { note -> note.art == "Klausur" }
-                        (klausuren).setData(filteredData)
+                        if (data.isEmpty()) return@observe
 
-                        if (filteredData.isEmpty()) {
-                            (adapter as ConcatAdapter).removeAdapter(headlineKlausuren)
-                            (adapter as ConcatAdapter).removeAdapter(klausuren)
-                            (adapter as ConcatAdapter).notifyDataSetChanged()
+                        val fach = data[0].fach
+                        val noten = data[0].noten
+                        // update headlines
+                        headlineKlausuren.setSchnitt(fach.klausurenSchnitt)
+                        headlineNormaleNoten.setSchnitt(fach.sonstigeSchnitt)
+
+                        // update noten
+                        val klausurNoten = noten.filter { note -> note.art == "Klausur" }
+                        val sonstigeNoten = noten.filter { note -> note.art == "Normale Note" }
+                        klausuren.setData(klausurNoten)
+                        normaleNoten.setData(sonstigeNoten)
+
+                        // add adapters to layout which are not empty
+                        if (klausurNoten.isNotEmpty()) {
+                            (adapter as ConcatAdapter).addAdapter(headlineKlausuren)
+                            (adapter as ConcatAdapter).addAdapter(klausuren)
                         }
-                    })
 
-                db.getFachMitNoten(fach.id)
-                    .observe(context as LifecycleOwner, { data ->
-                        val filteredData =
-                            data[0].noten.filter { note -> note.art == "Normale Note" }
-                        (normaleNoten).setData(filteredData)
-
-                        if (filteredData.isEmpty()) {
-                            (adapter as ConcatAdapter).removeAdapter(headlineNormaleNoten)
-                            (adapter as ConcatAdapter).removeAdapter(normaleNoten)
-                            (adapter as ConcatAdapter).notifyDataSetChanged()
+                        if (sonstigeNoten.isNotEmpty()) {
+                            (adapter as ConcatAdapter).addAdapter(headlineNormaleNoten)
+                            (adapter as ConcatAdapter).addAdapter(normaleNoten)
                         }
+                        (adapter as ConcatAdapter).notifyDataSetChanged()
                     })
             }
 

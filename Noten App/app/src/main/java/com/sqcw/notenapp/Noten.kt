@@ -1,6 +1,7 @@
 package com.sqcw.notenapp
 
 import android.os.Bundle
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -9,7 +10,6 @@ import com.sqcw.notenapp.adapters.FachListeAdapter
 import com.sqcw.notenapp.data.TheViewModel
 import com.sqcw.notenapp.data.entities.Fach
 import com.sqcw.notenapp.data.entities.MetaInformation
-import com.sqcw.notenapp.data.entities.Note
 import com.sqcw.notenapp.util.LinearSpacingManager
 
 
@@ -18,9 +18,10 @@ class Noten : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_noten)
 
-        // initialize Database and UserData
+        // initialize Database, Check User Data and set Header Data
         val db = ViewModelProvider(this).get(TheViewModel::class.java)
         initializeUserData(db)
+        setHeaderData(db)
 
         // initialize Fächerliste
         findViewById<RecyclerView>(R.id.notenFachListe).apply {
@@ -60,26 +61,65 @@ class Noten : AppCompatActivity() {
                     0f,
                     0f,
                     0f,
+                    0f,
                     0f
                 )
             )
 
             val testFaecher = listOf(
-                Fach(0, "Deutsch", "#ad0e00", "Sonstige", 1, "12/1", 0f, 0, false),
-                Fach(0, "Mathe", "#00277a", "Sonstige", 1, "12/1", 0f, 0, false),
-                Fach(0, "Englisch", "#c7c702", "Sonstige", 1, "12/1", 0f, 0, false)
+                Fach(0, "Deutsch", "#ad0e00", "Sonstige", 1, "12/1", 0f, 0f, 0f, 0, false),
+                Fach(0, "Mathe", "#00277a", "Sonstige", 1, "12/1", 0f, 0f, 0f, 0, false),
+                Fach(0, "Englisch", "#c7c702", "Sonstige", 1, "12/1", 0f, 0f, 0f, 0, false)
             )
             testFaecher.forEach { db.insertFach(it) }
+        })
+    }
 
-            val testNoten = listOf(
-                Note(0, "12.08.2021", 12, "Klausur", "", 1),
-                Note(0, "12.08.2021", 10, "Klausur", "", 1),
-                Note(0, "12.08.2021", 12, "Normale Note", "", 1),
-                Note(0, "12.08.2021", 10, "Normale Note", "", 2),
-                Note(0, "12.08.2021", 12, "Normale Note", "", 2),
-            )
-            testNoten.forEach { db.insertNote(it) }
+    // set Header data
+    fun setHeaderData(db: TheViewModel) {
+        db.readMetaInformation().observe(this, Observer { metaInformationList ->
+            if (metaInformationList.isEmpty()) return@Observer
 
+            val metaInformation = metaInformationList[0]
+
+            //set Halbjahr
+            findViewById<TextView>(R.id.notenHalbjahrText).apply {
+                text = "Abschnitt: ${metaInformation.halbjahr}"
+            }
+
+            // set Halbjahrschnitt
+            findViewById<TextView>(R.id.notenSchnittText).apply {
+                text = when (metaInformation.halbjahr) {
+                    "12/1" -> "Schnitt: ${
+                        if (metaInformation.schnitt121 == 0f) "N/A"
+                        else "%.2f".format(metaInformation.schnitt121)
+                    }"
+                    "12/2" -> "Schnitt: ${
+                        if (metaInformation.schnitt122 == 0f) "N/A"
+                        else "%.2f".format(metaInformation.schnitt122)
+                    }"
+                    "13/1" -> "Schnitt: ${
+                        if (metaInformation.schnitt131 == 0f) "N/A"
+                        else "%.2f".format(metaInformation.schnitt131)
+                    }"
+                    "13/2" -> "Schnitt: ${
+                        if (metaInformation.schnitt132 == 0f) "N/A"
+                        else "%.2f".format(metaInformation.schnitt132)
+                    }"
+                    else -> "Prüfungsschnitt: ${
+                        if (metaInformation.pruefungsSchnitt == 0f) "N/A"
+                        else "%.2f".format(metaInformation.pruefungsSchnitt)
+                    }"
+                }
+            }
+
+            // set Abinote
+            findViewById<TextView>(R.id.notenAbischnittText).apply {
+                text = "Abi-Note: ${
+                    if (metaInformation.abiSchnitt == 0f) "N/A"
+                    else "%.2f".format(metaInformation.abiSchnitt)
+                }"
+            }
         })
     }
 }
