@@ -79,6 +79,12 @@ class ChangeNote : AppCompatActivity() {
                 userInputNote.id = note.id
                 userInputNote.fachId = note.fachId
 
+                // nothing changed
+                if (userInputNote == note) {
+                    finish()
+                    return@setOnClickListener
+                }
+
                 // update data
                 lifecycleScope.launch {
                     db.updateNote(userInputNote)

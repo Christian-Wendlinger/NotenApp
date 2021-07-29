@@ -27,7 +27,7 @@
                 android:layout_marginTop="10dp"
                 android:text="@string/fachListeFachname"
                 android:textColor="@color/white_text"
-                android:textSize="22sp"
+                android:textSize="24sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/fachListeEndnote"
                 android:textColor="@color/white_text"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="@+id/fachListeFachname"
                 app:layout_constraintTop_toBottomOf="@+id/fachListeFachname" />
 
@@ -48,6 +48,7 @@
                 android:layout_marginTop="1dp"
                 android:paddingBottom="10dp"
                 android:text="@string/fachListeSchnitt"
+                android:textSize="16sp"
                 android:textColor="@color/white_text"
                 app:layout_constraintStart_toStartOf="@+id/fachListeEndnote"
                 app:layout_constraintTop_toBottomOf="@+id/fachListeEndnote" />

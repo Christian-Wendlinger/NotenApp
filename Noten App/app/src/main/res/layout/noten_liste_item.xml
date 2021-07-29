@@ -11,7 +11,7 @@
         android:layout_marginTop="3dp"
         android:text="@string/notenListeDatum"
         android:textColor="@color/white_text"
-        android:textSize="14sp"
+        android:textSize="16sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -23,7 +23,7 @@
         android:gravity="right"
         android:text="@string/notenListeNote"
         android:textColor="@color/white_text"
-        android:textSize="14sp"
+        android:textSize="16sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toTopOf="@+id/notenListeDatum" />
@@ -37,7 +37,7 @@
         android:layout_marginBottom="3dp"
         android:text="@string/notenListeBemerkung"
         android:textColor="@color/white_text"
-        android:textSize="14sp"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/notenListeNote"

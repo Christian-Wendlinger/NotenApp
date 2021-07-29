@@ -4,6 +4,7 @@ package com.sqcw.notenapp.adapters
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -67,6 +68,25 @@ class FachListeAdapter internal constructor(
             // set Schnitt
             findViewById<TextView>(R.id.fachListeSchnitt).apply {
                 text = if (fach.beinhaltetNoten) "%.2f".format(fach.schnitt) else "N/A"
+
+                // set Padding in Dp
+                setPadding(
+                    0,
+                    0,
+                    0,
+                    if (expanded[position])
+                        TypedValue.applyDimension(
+                            TypedValue.COMPLEX_UNIT_DIP,
+                            0f,
+                            resources.displayMetrics
+                        ).toInt()
+                    else
+                        TypedValue.applyDimension(
+                            TypedValue.COMPLEX_UNIT_DIP,
+                            15f,
+                            resources.displayMetrics
+                        ).toInt()
+                )
             }
 
             // listener to expand and contract list items
