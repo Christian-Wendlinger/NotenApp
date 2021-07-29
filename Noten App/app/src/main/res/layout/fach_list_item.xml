@@ -8,6 +8,9 @@
         android:id="@+id/fachListeCard"
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="5dp"
+        app:cardUseCompatPadding="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -20,46 +23,57 @@
                 android:id="@+id/fachListeFachname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="15dp"
                 android:layout_marginTop="10dp"
                 android:text="@string/fachListeFachname"
-                android:textColor="@color/black"
+                android:textColor="@color/white_text"
                 android:textSize="22sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/fachListeSchnitt"
+                android:id="@+id/fachListeEndnote"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/fachListeSchnitt"
-                android:textColor="@color/black"
+                android:text="@string/fachListeEndnote"
+                android:textColor="@color/white_text"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="@+id/fachListeFachname"
                 app:layout_constraintTop_toBottomOf="@+id/fachListeFachname" />
+
+            <TextView
+                android:id="@+id/fachListeSchnitt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
+                android:paddingBottom="10dp"
+                android:text="@string/fachListeSchnitt"
+                android:textColor="@color/white_text"
+                app:layout_constraintStart_toStartOf="@+id/fachListeEndnote"
+                app:layout_constraintTop_toBottomOf="@+id/fachListeEndnote" />
 
             <ImageView
                 android:id="@+id/fachListeAddIcon"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
                 android:padding="5dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/icon_add"
-                app:tint="@color/black" />
+                app:tint="@color/white_text" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/fachListeNotenListe"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="10dp"
                 android:nestedScrollingEnabled="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/fachListeSchnitt"
+                app:layout_constraintStart_toStartOf="@+id/fachListeEndnote"
                 app:layout_constraintTop_toBottomOf="@+id/fachListeSchnitt" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
