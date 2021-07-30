@@ -1,14 +1,14 @@
-package com.sqcw.notenapp.data
+package com.sqcw.notenapp.db
 
 import androidx.room.*
-import com.sqcw.notenapp.data.entities.Fach
-import com.sqcw.notenapp.data.entities.MetaInformation
-import com.sqcw.notenapp.data.entities.Note
-import com.sqcw.notenapp.data.relations.FachAndNoten
-import com.sqcw.notenapp.data.relations.MetaInformationAndFaecher
+import com.sqcw.notenapp.db.entities.Fach
+import com.sqcw.notenapp.db.entities.MetaInformation
+import com.sqcw.notenapp.db.entities.Note
+import com.sqcw.notenapp.db.relations.FachAndNoten
+import com.sqcw.notenapp.db.relations.MetaInformationAndFaecher
 
 @Dao
-interface TheDao {
+interface NotenAppDao {
     // MetaInformation
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun createMetaInformation(metaInformation: MetaInformation)

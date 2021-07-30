@@ -9,13 +9,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.sqcw.notenapp.ChangeNote
 import com.sqcw.notenapp.R
-import com.sqcw.notenapp.data.entities.Note
+import com.sqcw.notenapp.db.entities.Note
 
-class NotenListeNotenAdapter internal constructor(
+class NotenAdapter internal constructor(
     context: Context?,
     noten: List<Note>
 ) :
-    RecyclerView.Adapter<NotenListeNotenAdapter.ViewHolder>() {
+    RecyclerView.Adapter<NotenAdapter.ViewHolder>() {
     private var items: List<Note> = noten
     private val inflater: LayoutInflater = LayoutInflater.from(context)
 
@@ -23,7 +23,7 @@ class NotenListeNotenAdapter internal constructor(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             inflater.inflate(
-                R.layout.noten_liste_item,
+                R.layout.noten,
                 parent,
                 false
             )
@@ -36,17 +36,17 @@ class NotenListeNotenAdapter internal constructor(
 
         holder.itemView.apply {
             // change date
-            findViewById<TextView>(R.id.notenListeDatum).apply {
+            findViewById<TextView>(R.id.noteDatum).apply {
                 text = note.datum
             }
 
             // change Punktzahl
-            findViewById<TextView>(R.id.notenListeNote).apply {
+            findViewById<TextView>(R.id.notePunktzahl).apply {
                 text = "${if (note.gewicht > 1) "(x${note.gewicht})" else ""}    ${note.punktzahl}"
             }
 
             // change Bemerkung
-            findViewById<TextView>(R.id.notenListeBemerkung).apply {
+            findViewById<TextView>(R.id.noteBemerkung).apply {
                 text = note.bemerkung
             }
 

@@ -5,7 +5,7 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/notenListeDatum"
+        android:id="@+id/noteDatum"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="3dp"
@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/notenListeNote"
+        android:id="@+id/notePunktzahl"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="right"
@@ -26,10 +26,10 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toTopOf="@+id/notenListeDatum" />
+        app:layout_constraintTop_toTopOf="@+id/noteDatum" />
 
     <TextView
-        android:id="@+id/notenListeBemerkung"
+        android:id="@+id/noteBemerkung"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
@@ -40,7 +40,7 @@
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/notenListeNote"
+        app:layout_constraintStart_toEndOf="@+id/notePunktzahl"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline

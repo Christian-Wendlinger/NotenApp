@@ -1,9 +1,9 @@
 package com.sqcw.notenapp.util
 
 import android.content.Context
-import com.sqcw.notenapp.data.TheDatabase
-import com.sqcw.notenapp.data.entities.Fach
-import com.sqcw.notenapp.data.entities.Note
+import com.sqcw.notenapp.db.NotenAppDatabase
+import com.sqcw.notenapp.db.entities.Fach
+import com.sqcw.notenapp.db.entities.Note
 
 // update database after change
 suspend fun updateDb(
@@ -20,7 +20,7 @@ private suspend fun updateFachInDb(
     context: Context,
     fach: Fach
 ) {
-    val db = TheDatabase.getInstance(context).dao()
+    val db = NotenAppDatabase.getInstance(context).dao()
     // This should never crash!
     val notenListe = db.getFachMitNoten(fach.id)[0].noten
 
@@ -54,15 +54,16 @@ private suspend fun updateFachInDb(
     val kommaAnteilDerNote: Float = gesamtSchnitt % noteAbgeschnitten
     val gesamtNote = if (kommaAnteilDerNote < 0.5) noteAbgeschnitten else noteAbgeschnitten + 1
 
-    // update variables
-    fach.beinhaltetNoten = beinhaltetNoten
-    fach.klausurenSchnitt = klausurenSchnitt
-    fach.sonstigeSchnitt = sonstigeSchnitt
-    fach.schnitt = gesamtSchnitt
-    fach.endnote = gesamtNote
-
-    // update data in database
-    db.updateFach(fach)
+    // update data in database with new values
+    db.updateFach(
+        fach.copy(
+            beinhaltetNoten = beinhaltetNoten,
+            klausurenSchnitt = klausurenSchnitt,
+            sonstigeSchnitt = sonstigeSchnitt,
+            schnitt = gesamtSchnitt,
+            endnote = gesamtNote
+        )
+    )
 }
 
 // calculate Schnitt für Halbjahr
@@ -70,7 +71,7 @@ private suspend fun updateHalbjahrInDb(
     context: Context,
     halbjahr: String
 ) {
-    val db = TheDatabase.getInstance(context).dao()
+    val db = NotenAppDatabase.getInstance(context).dao()
     // This should never crash!
     val dbObject = db.getHalbjahrMitFaecher(halbjahr)[0]
     val metaInformation = dbObject.metaInformation
@@ -81,16 +82,16 @@ private suspend fun updateHalbjahrInDb(
         if (faecher.isEmpty()) 0f
         else calculateHalbjahrSchnitt(faecher)
 
-    when (halbjahr) {
-        "12/1" -> metaInformation.schnitt121 = halbjahrSchnitt
-        "12/2" -> metaInformation.schnitt122 = halbjahrSchnitt
-        "13/1" -> metaInformation.schnitt131 = halbjahrSchnitt
-        "13/2" -> metaInformation.schnitt132 = halbjahrSchnitt
-        else -> metaInformation.pruefungsSchnitt = halbjahrSchnitt
-    }
-
     // update MetaInformation
-    db.updateMetaInformation(metaInformation)
+    db.updateMetaInformation(
+        when (halbjahr) {
+            "12/1" -> metaInformation.copy(schnitt121 = halbjahrSchnitt)
+            "12/2" -> metaInformation.copy(schnitt122 = halbjahrSchnitt)
+            "13/1" -> metaInformation.copy(schnitt131 = halbjahrSchnitt)
+            "13/2" -> metaInformation.copy(schnitt132 = halbjahrSchnitt)
+            else -> metaInformation.copy(abiSchnitt = halbjahrSchnitt)
+        }
+    )
 }
 
 // calculate schnitt for Notenliste

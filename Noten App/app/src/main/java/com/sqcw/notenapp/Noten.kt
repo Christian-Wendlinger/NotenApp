@@ -6,12 +6,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.sqcw.notenapp.adapters.FachListeAdapter
-import com.sqcw.notenapp.data.TheDao
-import com.sqcw.notenapp.data.TheDatabase
-import com.sqcw.notenapp.data.entities.Fach
-import com.sqcw.notenapp.data.entities.MetaInformation
-import com.sqcw.notenapp.data.entities.Note
+import com.sqcw.notenapp.adapters.FachAdapter
+import com.sqcw.notenapp.db.NotenAppDao
+import com.sqcw.notenapp.db.NotenAppDatabase
+import com.sqcw.notenapp.db.entities.Fach
+import com.sqcw.notenapp.db.entities.MetaInformation
+import com.sqcw.notenapp.db.entities.Note
 import com.sqcw.notenapp.util.LinearSpacingManager
 import kotlinx.coroutines.launch
 
@@ -22,14 +22,14 @@ class Noten : AppCompatActivity() {
         setContentView(R.layout.activity_noten)
 
         // initialize Database, Check User Data and set Header Data
-        val db = TheDatabase.getInstance(this).dao()
+        val db = NotenAppDatabase.getInstance(this).dao()
         lifecycleScope.launch {
             init(db)
         }
     }
 
     // initialize Liste
-    private suspend fun init(db: TheDao) {
+    private suspend fun init(db: NotenAppDao) {
         // create new user data or read data
         val metaInformationList = db.readMetaInformation()
         val metaInformation =
@@ -50,7 +50,7 @@ class Noten : AppCompatActivity() {
         // initialize Recyclerview
         findViewById<RecyclerView>(R.id.notenFachListe).apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = FachListeAdapter(context, faecher, notenSammlung)
+            adapter = FachAdapter(context, faecher, notenSammlung)
 
             // prevent multiple itemDecorations
             if (itemDecorationCount == 0) addItemDecoration(LinearSpacingManager(-50))
@@ -59,27 +59,15 @@ class Noten : AppCompatActivity() {
 
 
     // read userInformation and create new user if necessary
-    private suspend fun initializeUserData(db: TheDao): MetaInformation {
-        val metaInformation =
-            MetaInformation(
-                0,
-                "",
-                "12/1",
-                0f,
-                0f,
-                0f,
-                0f,
-                0f,
-                0f
-            )
-
+    private suspend fun initializeUserData(db: NotenAppDao): MetaInformation {
+        val metaInformation = MetaInformation()
         db.createMetaInformation(metaInformation)
 
         // temporary
         val testFaecher = listOf(
-            Fach(0, "Deutsch", "#ad0e00", "Sonstige", 1, "12/1", 0f, 0f, 0f, 0, false),
-            Fach(0, "Mathe", "#00277a", "Sonstige", 1, "12/1", 0f, 0f, 0f, 0, false),
-            Fach(0, "Englisch", "#c7c702", "Sonstige", 1, "12/1", 0f, 0f, 0f, 0, false)
+            Fach(id = 1, name = "Deutsch", farbe = "#ad0e00", halbjahr = "12/1"),
+            Fach(id = 2, name = "Mathe", farbe = "#00277a", halbjahr = "12/1"),
+            Fach(id = 3, name = "Englisch", farbe = "#c7c702", halbjahr = "12/1")
         )
         testFaecher.forEach { db.insertFach(it) }
 
@@ -133,7 +121,7 @@ class Noten : AppCompatActivity() {
         super.onResume()
 
         // update the view!
-        val db = TheDatabase.getInstance(this).dao()
+        val db = NotenAppDatabase.getInstance(this).dao()
         lifecycleScope.launch {
             init(db)
         }

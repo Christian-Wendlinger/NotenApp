@@ -16,15 +16,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sqcw.notenapp.AddNeueNote
 import com.sqcw.notenapp.R
-import com.sqcw.notenapp.data.entities.Fach
-import com.sqcw.notenapp.data.entities.Note
+import com.sqcw.notenapp.db.entities.Fach
+import com.sqcw.notenapp.db.entities.Note
 
-class FachListeAdapter internal constructor(
+class FachAdapter internal constructor(
     context: Context?,
     faecher: List<Fach>,
     notenSammlung: List<List<Note>>
 ) :
-    RecyclerView.Adapter<FachListeAdapter.ViewHolder>() {
+    RecyclerView.Adapter<FachAdapter.ViewHolder>() {
 
     private val faecher: List<Fach> = faecher
     private val notenSammlung: List<List<Note>> = notenSammlung
@@ -35,7 +35,7 @@ class FachListeAdapter internal constructor(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             inflater.inflate(
-                R.layout.fach_list_item,
+                R.layout.fach,
                 parent,
                 false
             )
@@ -49,7 +49,7 @@ class FachListeAdapter internal constructor(
 
         holder.itemView.apply {
             // set backgroundColor of Card
-            findViewById<CardView>(R.id.fachListeCard).apply {
+            findViewById<CardView>(R.id.fachCard).apply {
                 setCardBackgroundColor(
                     Color.parseColor(
                         fach.farbe
@@ -58,15 +58,15 @@ class FachListeAdapter internal constructor(
             }
 
             // set Fachname
-            findViewById<TextView>(R.id.fachListeFachname).apply { text = fach.name }
+            findViewById<TextView>(R.id.fachName).apply { text = fach.name }
 
             // set Endnote
-            findViewById<TextView>(R.id.fachListeEndnote).apply {
+            findViewById<TextView>(R.id.fachEndnote).apply {
                 text = "${if (fach.beinhaltetNoten) fach.endnote else "N/A"} Punkte"
             }
 
             // set Schnitt
-            findViewById<TextView>(R.id.fachListeSchnitt).apply {
+            findViewById<TextView>(R.id.fachSchnitt).apply {
                 text = if (fach.beinhaltetNoten) "%.2f".format(fach.schnitt) else "N/A"
 
                 // set Padding in Dp
@@ -83,7 +83,7 @@ class FachListeAdapter internal constructor(
                     else
                         TypedValue.applyDimension(
                             TypedValue.COMPLEX_UNIT_DIP,
-                            15f,
+                            13f,
                             resources.displayMetrics
                         ).toInt()
                 )
@@ -96,7 +96,7 @@ class FachListeAdapter internal constructor(
             }
 
             // add neue Note Listener
-            findViewById<ImageView>(R.id.fachListeAddIcon).apply {
+            findViewById<ImageView>(R.id.fachAdd).apply {
                 setOnClickListener {
                     val intent = Intent(context, AddNeueNote::class.java)
                     intent.putExtra("id", fach.id)
@@ -105,7 +105,7 @@ class FachListeAdapter internal constructor(
             }
 
             // initialize NotenListe
-            findViewById<RecyclerView>(R.id.fachListeNotenListe).apply {
+            findViewById<RecyclerView>(R.id.fachNoten).apply {
                 visibility = if (expanded[position]) View.VISIBLE else View.GONE
                 layoutManager = LinearLayoutManager(context)
                 adapter = ConcatAdapter()
@@ -118,8 +118,8 @@ class FachListeAdapter internal constructor(
                 if (klausurNoten.isNotEmpty()) {
                     // initialize Adapters with data
                     val headlineKlausuren =
-                        NotenListeHeaderAdapter(context, "Klausuren", fach.klausurenSchnitt)
-                    val klausuren = NotenListeNotenAdapter(context, klausurNoten)
+                        NotenHeaderAdapter(context, "Klausuren", fach.klausurenSchnitt)
+                    val klausuren = NotenAdapter(context, klausurNoten)
 
                     // add Adapters
                     (adapter as ConcatAdapter).addAdapter(headlineKlausuren)
@@ -130,8 +130,8 @@ class FachListeAdapter internal constructor(
                 if (sonstigeNoten.isNotEmpty()) {
                     // initialize Adapters with data
                     val headlineNormaleNoten =
-                        NotenListeHeaderAdapter(context, "Normale Noten", fach.sonstigeSchnitt)
-                    val normaleNoten = NotenListeNotenAdapter(context, sonstigeNoten)
+                        NotenHeaderAdapter(context, "Normale Noten", fach.sonstigeSchnitt)
+                    val normaleNoten = NotenAdapter(context, sonstigeNoten)
 
                     // add Adapters
                     (adapter as ConcatAdapter).addAdapter(headlineNormaleNoten)

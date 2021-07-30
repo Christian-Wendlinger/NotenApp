@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.sqcw.notenapp.data.TheDao
-import com.sqcw.notenapp.data.TheDatabase
-import com.sqcw.notenapp.data.entities.Note
+import com.sqcw.notenapp.db.NotenAppDao
+import com.sqcw.notenapp.db.NotenAppDatabase
+import com.sqcw.notenapp.db.entities.Note
 import com.sqcw.notenapp.util.updateDb
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -21,13 +21,13 @@ class AddNeueNote : AppCompatActivity() {
         setContentView(R.layout.activity_neue_note)
 
         // initialize Database
-        val db = TheDatabase.getInstance(this).dao()
+        val db = NotenAppDatabase.getInstance(this).dao()
         lifecycleScope.launch {
             init(db)
         }
     }
 
-    private suspend fun init(db: TheDao) {
+    private suspend fun init(db: NotenAppDao) {
         val fachListe = db.readFach(intent.extras!!.getInt("id"))
 
         // This should never crash!

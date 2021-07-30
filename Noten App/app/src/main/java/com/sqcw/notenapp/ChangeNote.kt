@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.sqcw.notenapp.data.TheDao
-import com.sqcw.notenapp.data.TheDatabase
-import com.sqcw.notenapp.data.entities.Note
+import com.sqcw.notenapp.db.NotenAppDao
+import com.sqcw.notenapp.db.NotenAppDatabase
+import com.sqcw.notenapp.db.entities.Note
 import com.sqcw.notenapp.util.updateDb
 import kotlinx.coroutines.launch
 
@@ -19,13 +19,13 @@ class ChangeNote : AppCompatActivity() {
         setContentView(R.layout.activity_change_note)
 
         // get Database Instance
-        val db = TheDatabase.getInstance(this).dao()
+        val db = NotenAppDatabase.getInstance(this).dao()
         lifecycleScope.launch {
             init(db)
         }
     }
 
-    private suspend fun init(db: TheDao) {
+    private suspend fun init(db: NotenAppDao) {
         // This should never crash!
         val note = db.readNote(intent.extras!!.getInt("id"))[0]
         val fach = db.readFach(note.fachId)[0]
@@ -75,9 +75,8 @@ class ChangeNote : AppCompatActivity() {
         // initialize accept
         findViewById<ImageView>(R.id.changeNoteAccept).apply {
             setOnClickListener {
-                val userInputNote = parseInput() ?: return@setOnClickListener
-                userInputNote.id = note.id
-                userInputNote.fachId = note.fachId
+                var userInputNote = parseInput() ?: return@setOnClickListener
+                userInputNote = userInputNote.copy(id = note.id, fachId = note.fachId)
 
                 // nothing changed
                 if (userInputNote == note) {

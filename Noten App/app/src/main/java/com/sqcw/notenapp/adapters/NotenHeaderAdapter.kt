@@ -8,12 +8,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.sqcw.notenapp.R
 
-class NotenListeHeaderAdapter internal constructor(
+class NotenHeaderAdapter internal constructor(
     context: Context?,
     title: String,
     schnitt: Float
 ) :
-    RecyclerView.Adapter<NotenListeHeaderAdapter.ViewHolder>() {
+    RecyclerView.Adapter<NotenHeaderAdapter.ViewHolder>() {
     private val title: String = title
     private var schnitt: Float = schnitt
     private val inflater: LayoutInflater = LayoutInflater.from(context)
@@ -22,7 +22,7 @@ class NotenListeHeaderAdapter internal constructor(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             inflater.inflate(
-                R.layout.noten_liste_headline,
+                R.layout.noten_headline,
                 parent,
                 false
             )
@@ -33,7 +33,7 @@ class NotenListeHeaderAdapter internal constructor(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         // Change title
         holder.itemView.apply {
-            findViewById<TextView>(R.id.notenListeHeadline).apply {
+            findViewById<TextView>(R.id.notenHeadline).apply {
                 text = "$title — ${"%.2f".format(schnitt)}"
             }
         }
