@@ -1,6 +1,8 @@
 package com.sqcw.notenapp
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -11,7 +13,7 @@ import com.sqcw.notenapp.db.NotenAppDao
 import com.sqcw.notenapp.db.NotenAppDatabase
 import com.sqcw.notenapp.db.entities.Fach
 import com.sqcw.notenapp.db.entities.MetaInformation
-import com.sqcw.notenapp.db.entities.Note
+import com.sqcw.notenapp.db.relations.FachAndNoten
 import com.sqcw.notenapp.util.LinearSpacingManager
 import kotlinx.coroutines.launch
 
@@ -21,40 +23,35 @@ class Noten : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_noten)
 
+        // onClickListener for Settings
+        findViewById<ImageView>(R.id.notenSettingsIcon).apply {
+            setOnClickListener {
+                val intent = Intent(context, Settings::class.java)
+                startActivity(intent)
+            }
+        }
+
         // initialize Database, Check User Data and set Header Data
         val db = NotenAppDatabase.getInstance(this).dao()
         lifecycleScope.launch {
             init(db)
+            populateListAndSetHeaderData(db)
         }
     }
 
     // initialize Liste
     private suspend fun init(db: NotenAppDao) {
-        // create new user data or read data
-        val metaInformationList = db.readMetaInformation()
-        val metaInformation =
-            if (metaInformationList.isEmpty()) initializeUserData(db)
-            else metaInformationList[0]
-
-        setHeaderData(metaInformation)
-
-        // read Fächer
-        val faecherDbListe = db.getHalbjahrMitFaecher(metaInformation.halbjahr)
-        val faecher: List<Fach> =
-            if (faecherDbListe.isEmpty()) listOf()
-            else faecherDbListe[0].faecher
-        // this should read all Noten for every Fach
-        val notenSammlung: MutableList<List<Note>> = mutableListOf()
-        faecher.forEach { fach -> notenSammlung.add(db.getFachMitNoten(fach.id)[0].noten) }
-
         // initialize Recyclerview
         findViewById<RecyclerView>(R.id.notenFachListe).apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = FachAdapter(context, faecher, notenSammlung)
+            adapter = FachAdapter()
 
             // prevent multiple itemDecorations
             if (itemDecorationCount == 0) addItemDecoration(LinearSpacingManager(-50))
         }
+
+        // create new user data or read data
+        if (db.readMetaInformation().isEmpty()) initializeUserData(db)
     }
 
 
@@ -65,9 +62,9 @@ class Noten : AppCompatActivity() {
 
         // temporary
         val testFaecher = listOf(
-            Fach(id = 1, name = "Deutsch", farbe = "#ad0e00", halbjahr = "12/1"),
-            Fach(id = 2, name = "Mathe", farbe = "#00277a", halbjahr = "12/1"),
-            Fach(id = 3, name = "Englisch", farbe = "#c7c702", halbjahr = "12/1")
+            Fach(name = "Deutsch", farbe = "#ad0e00", halbjahr = "12/1"),
+            Fach(name = "Mathe", farbe = "#00277a", halbjahr = "12/1"),
+            Fach(name = "Englisch", farbe = "#c7c702", halbjahr = "12/1")
         )
         testFaecher.forEach { db.insertFach(it) }
 
@@ -114,6 +111,35 @@ class Noten : AppCompatActivity() {
                 else "%.2f".format(metaInformation.abiSchnitt)
             }"
         }
+
+        // set Name
+        findViewById<TextView>(R.id.notenUserNameText).apply {
+            text = if (metaInformation.name == "") "Vorname Nachname" else metaInformation.name
+        }
+    }
+
+    // fun to read faecher and noten from database and populate the recyclerview
+    private suspend fun populateListAndSetHeaderData(db: NotenAppDao) {
+        //read metaInformation and setData
+        val rawMetaInformation = db.readMetaInformation()
+        val metaInformation =
+            if (rawMetaInformation.isEmpty()) MetaInformation() else rawMetaInformation[0]
+        setHeaderData(metaInformation)
+
+        // read Fächer
+        val faecherDbListe = db.getHalbjahrMitFaecher(metaInformation.halbjahr)
+        val faecher: List<Fach> =
+            if (faecherDbListe.isEmpty()) listOf()
+            else faecherDbListe[0].faecher
+
+        // get Noten for Fach as well for listAdapter
+        val faecherAndNoten: MutableList<FachAndNoten> = mutableListOf()
+        faecher.forEach { fach -> faecherAndNoten.add(db.getFachMitNoten(fach.id)[0]) }
+
+        // submit new Data
+        findViewById<RecyclerView>(R.id.notenFachListe).apply {
+            (adapter as FachAdapter).submitList(faecherAndNoten)
+        }
     }
 
     // override Resume to change the data after finishing another activity
@@ -123,7 +149,7 @@ class Noten : AppCompatActivity() {
         // update the view!
         val db = NotenAppDatabase.getInstance(this).dao()
         lifecycleScope.launch {
-            init(db)
+            populateListAndSetHeaderData(db)
         }
     }
 }

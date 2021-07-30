@@ -20,6 +20,9 @@ class AddNeueNote : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_neue_note)
 
+        // initialize Art
+        initializeDropdown()
+
         // initialize Database
         val db = NotenAppDatabase.getInstance(this).dao()
         lifecycleScope.launch {
@@ -32,8 +35,6 @@ class AddNeueNote : AppCompatActivity() {
 
         // This should never crash!
         val fach = fachListe[0]
-
-        initializeDropdown()
 
         // set title
         findViewById<TextView>(R.id.neueNoteTitel).apply { text = fach.name }

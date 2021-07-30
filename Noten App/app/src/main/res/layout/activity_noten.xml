@@ -23,11 +23,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="15dp"
-                android:layout_marginEnd="30dp"
                 android:text="@string/notenHalbjahrText"
                 android:textColor="@color/black"
                 android:textSize="18sp"
-                app:layout_constraintEnd_toStartOf="@+id/notenSettingsIcon"
+                app:layout_constraintEnd_toStartOf="@+id/guideline10"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -65,6 +64,20 @@
                 app:srcCompat="@drawable/icon_settings"
                 app:tint="@color/black" />
 
+            <TextView
+                android:id="@+id/notenUserNameText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="15dp"
+                android:gravity="right"
+                android:text="@string/notenUserNameText"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline10"
+                app:layout_constraintTop_toTopOf="@+id/notenAbischnittText" />
+
             <View
                 android:id="@+id/notenHeaderDivider"
                 android:layout_width="0dp"
@@ -75,7 +88,7 @@
                 android:background="?android:attr/listDivider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/notenAbischnittText" />
+                app:layout_constraintTop_toBottomOf="@+id/notenUserNameText" />
 
 
             <androidx.recyclerview.widget.RecyclerView
@@ -86,9 +99,19 @@
                 android:nestedScrollingEnabled="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/notenHeaderDivider" />
+                app:layout_constraintTop_toBottomOf="@+id/notenHeaderDivider">
+
+            </androidx.recyclerview.widget.RecyclerView>
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.45" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

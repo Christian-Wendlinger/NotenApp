@@ -6,7 +6,8 @@
         android:icon="@drawable/icon_app"
         android:label="@string/app_name"
         android:theme="@style/Theme.NotenApp">
-        <activity android:name=".ChangeNote"></activity>
+        <activity android:name=".Settings"></activity>
+        <activity android:name=".ChangeNote" />
         <activity android:name=".AddNeueNote" />
         <activity android:name=".Noten">
             <intent-filter>

@@ -16,4 +16,8 @@
     <string name="inputBemerkungHint">Bemerkung</string>
     <string name="fachListeSchnitt">N/A</string>
     <string name="inputGewichtHint">Gewicht</string>
+    <string name="notenUserNameText">Vorname Nachname</string>
+    <string name="settingsTitel">Einstellungen</string>
+    <string name="settingsNameInputText">Vorname Nachname</string>
+    <string name="settingsHalbjahrText">Abschnitt</string>
 </resources>

@@ -18,6 +18,9 @@ class ChangeNote : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_change_note)
 
+        // initialize Art Dropdown
+        initializeDropdown()
+
         // get Database Instance
         val db = NotenAppDatabase.getInstance(this).dao()
         lifecycleScope.launch {
@@ -31,7 +34,6 @@ class ChangeNote : AppCompatActivity() {
         val fach = db.readFach(note.fachId)[0]
 
         // initalize all values
-        initializeDropdown()
         // Fachname
         findViewById<TextView>(R.id.changeNoteTitel).apply { text = fach.name }
         // datum

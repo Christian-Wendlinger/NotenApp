@@ -3,8 +3,6 @@ package com.sqcw.notenapp.db
 import androidx.room.*
 import com.sqcw.notenapp.db.entities.Fach
 import com.sqcw.notenapp.db.entities.MetaInformation
-import com.sqcw.notenapp.db.entities.Note
-import com.sqcw.notenapp.db.relations.FachAndNoten
 import com.sqcw.notenapp.db.relations.MetaInformationAndFaecher
 
 @Dao
@@ -39,25 +37,25 @@ interface NotenAppDao {
 
     // Note
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertNote(note: Note)
+    suspend fun insertNote(note: com.sqcw.notenapp.db.entities.Note)
 
     @Update
-    suspend fun updateNote(note: Note)
+    suspend fun updateNote(note: com.sqcw.notenapp.db.entities.Note)
 
     @Delete
-    suspend fun deleteNote(note: Note)
+    suspend fun deleteNote(note: com.sqcw.notenapp.db.entities.Note)
 
     // read specific Note
     @Transaction
     @Query("SELECT * FROM note WHERE id = :id")
-    suspend fun readNote(id: Int): List<Note>
+    suspend fun readNote(id: Int): List<com.sqcw.notenapp.db.entities.Note>
 
 
     // Relationen
     // Fach und Noten auslesen
     @Transaction
     @Query("SELECT * FROM fach WHERE id = :fachId")
-    suspend fun getFachMitNoten(fachId: Int): List<FachAndNoten>
+    suspend fun getFachMitNoten(fachId: Int): List<com.sqcw.notenapp.db.relations.FachAndNoten>
 
     // Alle Fächer für ein Halbjahr auslesen
     @Transaction

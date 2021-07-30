@@ -1,7 +1,5 @@
 package com.sqcw.notenapp.adapters
 
-
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.util.TypedValue
@@ -11,69 +9,47 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.recyclerview.widget.ConcatAdapter
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.*
 import com.sqcw.notenapp.AddNeueNote
 import com.sqcw.notenapp.R
-import com.sqcw.notenapp.db.entities.Fach
-import com.sqcw.notenapp.db.entities.Note
+import com.sqcw.notenapp.db.relations.FachAndNoten
 
-class FachAdapter internal constructor(
-    context: Context?,
-    faecher: List<Fach>,
-    notenSammlung: List<List<Note>>
-) :
-    RecyclerView.Adapter<FachAdapter.ViewHolder>() {
 
-    private val faecher: List<Fach> = faecher
-    private val notenSammlung: List<List<Note>> = notenSammlung
-    private var expanded: MutableList<Boolean> = MutableList(faecher.size) { false }
-    private val inflater: LayoutInflater = LayoutInflater.from(context)
+class FachAdapter :
+    ListAdapter<FachAndNoten, FachAdapter.FachAndNotenViewHolder>(FachAndNotenDiffCallback) {
+    private var expanded: MutableList<Boolean> = mutableListOf()
 
-    // inflates the cell layout from xml when needed
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(
-            inflater.inflate(
-                R.layout.fach,
-                parent,
-                false
-            )
-        )
-    }
+    /* ViewHolder for Items, takes in the inflated view and the onClick behavior. */
+    inner class FachAndNotenViewHolder(itemView: View) :
+        RecyclerView.ViewHolder(itemView) {
+        private val card = itemView.findViewById<CardView>(R.id.fachCard)
+        private val name = itemView.findViewById<TextView>(R.id.fachName)
+        private val endNote = itemView.findViewById<TextView>(R.id.fachEndnote)
+        private val schnitt = itemView.findViewById<TextView>(R.id.fachSchnitt)
+        private val addNote = itemView.findViewById<ImageView>(R.id.fachAdd)
+        private val notenListe = itemView.findViewById<RecyclerView>(R.id.fachNoten)
 
-    // binds the data to the TextView in each cell
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val fach = faecher[position]
-        val noten: List<Note> = notenSammlung[position]
 
-        holder.itemView.apply {
-            // set backgroundColor of Card
-            findViewById<CardView>(R.id.fachCard).apply {
-                setCardBackgroundColor(
-                    Color.parseColor(
-                        fach.farbe
-                    )
-                )
-            }
+        /* Bind properties */
+        fun bind(fachAndNoten: FachAndNoten, position: Int, onClick: View.OnClickListener) {
+            itemView.setOnClickListener(onClick)
 
-            // set Fachname
-            findViewById<TextView>(R.id.fachName).apply { text = fach.name }
+            // data
+            val fach = fachAndNoten.fach
+            val noten = fachAndNoten.noten
 
-            // set Endnote
-            findViewById<TextView>(R.id.fachEndnote).apply {
-                text = "${if (fach.beinhaltetNoten) fach.endnote else "N/A"} Punkte"
-            }
+            // all values
+            card.setCardBackgroundColor(Color.parseColor(fach.farbe))
+            name.text = fach.name
+            endNote.text = "${if (fach.beinhaltetNoten) fach.endnote else "N/A"} Punkte"
 
-            // set Schnitt
-            findViewById<TextView>(R.id.fachSchnitt).apply {
+            // set Padding at the bottom according to current state
+            schnitt.apply {
                 text = if (fach.beinhaltetNoten) "%.2f".format(fach.schnitt) else "N/A"
 
                 // set Padding in Dp
                 setPadding(
-                    0,
-                    0,
-                    0,
+                    0, 0, 0,
                     if (expanded[position])
                         TypedValue.applyDimension(
                             TypedValue.COMPLEX_UNIT_DIP,
@@ -89,26 +65,21 @@ class FachAdapter internal constructor(
                 )
             }
 
-            // listener to expand and contract list items
-            setOnClickListener {
-                expanded[position] = !expanded[position]
-                notifyItemChanged(position)
+            // switch to new screen
+            addNote.setOnClickListener {
+                val intent = Intent(itemView.context, AddNeueNote::class.java)
+                intent.putExtra("id", fach.id)
+                itemView.context.startActivity(intent)
             }
 
-            // add neue Note Listener
-            findViewById<ImageView>(R.id.fachAdd).apply {
-                setOnClickListener {
-                    val intent = Intent(context, AddNeueNote::class.java)
-                    intent.putExtra("id", fach.id)
-                    context.startActivity(intent)
-                }
-            }
-
-            // initialize NotenListe
-            findViewById<RecyclerView>(R.id.fachNoten).apply {
+            // set up notenListe
+            notenListe.apply {
                 visibility = if (expanded[position]) View.VISIBLE else View.GONE
                 layoutManager = LinearLayoutManager(context)
-                adapter = ConcatAdapter()
+
+                // set adapter
+                val concatAdapter = ConcatAdapter()
+                adapter = concatAdapter
 
                 // filter for Noten
                 val klausurNoten = noten.filter { note -> note.art == "Klausur" }
@@ -117,36 +88,68 @@ class FachAdapter internal constructor(
                 // add klausuren headline and Noten if there are any
                 if (klausurNoten.isNotEmpty()) {
                     // initialize Adapters with data
-                    val headlineKlausuren =
+                    val headlineKlausurenAdapter =
                         NotenHeaderAdapter(context, "Klausuren", fach.klausurenSchnitt)
-                    val klausuren = NotenAdapter(context, klausurNoten)
+
+                    // create Adapter and set data for Klausurnoten
+                    val klausurenAdapter = NotenAdapter()
+                    klausurenAdapter.submitList(klausurNoten)
 
                     // add Adapters
-                    (adapter as ConcatAdapter).addAdapter(headlineKlausuren)
-                    (adapter as ConcatAdapter).addAdapter(klausuren)
-                    (adapter as ConcatAdapter).notifyDataSetChanged()
+                    concatAdapter.addAdapter(headlineKlausurenAdapter)
+                    concatAdapter.addAdapter(klausurenAdapter)
                 }
 
                 if (sonstigeNoten.isNotEmpty()) {
                     // initialize Adapters with data
-                    val headlineNormaleNoten =
+                    val headlineNormaleNotenAdapter =
                         NotenHeaderAdapter(context, "Normale Noten", fach.sonstigeSchnitt)
-                    val normaleNoten = NotenAdapter(context, sonstigeNoten)
+
+                    // create Adapter and set data for normale Noten
+                    val normaleNotenAdapter = NotenAdapter()
+                    normaleNotenAdapter.submitList(sonstigeNoten)
 
                     // add Adapters
-                    (adapter as ConcatAdapter).addAdapter(headlineNormaleNoten)
-                    (adapter as ConcatAdapter).addAdapter(normaleNoten)
-                    (adapter as ConcatAdapter).notifyDataSetChanged()
+                    concatAdapter.addAdapter(headlineNormaleNotenAdapter)
+                    concatAdapter.addAdapter(normaleNotenAdapter)
                 }
+                concatAdapter.notifyDataSetChanged()
             }
         }
     }
 
-    // total number of cells
-    override fun getItemCount(): Int {
-        return faecher.size
+    /* Creates and inflates view and return ViewHolder. */
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FachAndNotenViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.fach, parent, false)
+        return FachAndNotenViewHolder(view)
     }
 
-    // stores and recycles views as they are scrolled off screen
-    inner class ViewHolder internal constructor(itemView: View) : RecyclerView.ViewHolder(itemView)
+    /* Gets current item and uses it to bind view. */
+    override fun onBindViewHolder(holder: FachAndNotenViewHolder, position: Int) {
+        val fachAndNoten = getItem(position)
+        holder.bind(fachAndNoten, position) {
+            expanded[position] = !expanded[position]
+            notifyItemChanged(position)
+        }
+    }
+
+    // Callback to efficiently compare items
+    object FachAndNotenDiffCallback : DiffUtil.ItemCallback<FachAndNoten>() {
+        override fun areItemsTheSame(oldItem: FachAndNoten, newItem: FachAndNoten): Boolean {
+            return oldItem.fach.id == newItem.fach.id
+        }
+
+        override fun areContentsTheSame(oldItem: FachAndNoten, newItem: FachAndNoten): Boolean {
+            return oldItem == newItem
+        }
+    }
+
+    // override this function to work properly with expansions
+    override fun submitList(list: MutableList<FachAndNoten>?) {
+        super.submitList(list)
+
+        // create new List with the right size
+        expanded = if (list == null) mutableListOf() else MutableList(list.size) { false }
+    }
 }
