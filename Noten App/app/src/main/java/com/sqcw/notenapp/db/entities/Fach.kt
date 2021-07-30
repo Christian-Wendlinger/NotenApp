@@ -1,5 +1,6 @@
 package com.sqcw.notenapp.db.entities
 
+import android.graphics.Color
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -7,10 +8,10 @@ import androidx.room.PrimaryKey
 data class Fach(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val name: String,
-    val farbe: String,
+    var name: String = "",
+    var farbe: Int = Color.BLACK,
     val fachart: String = "Sonstige",
-    val gewicht: Int = 1,
+    var gewicht: Int = 1,
     val halbjahr: String,
     val klausurenSchnitt: Float = 0f,
     val sonstigeSchnitt: Float = 0f,

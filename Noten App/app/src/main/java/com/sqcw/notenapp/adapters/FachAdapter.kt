@@ -1,7 +1,6 @@
 package com.sqcw.notenapp.adapters
 
 import android.content.Intent
-import android.graphics.Color
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -28,6 +27,7 @@ class FachAdapter :
         private val schnitt = itemView.findViewById<TextView>(R.id.fachSchnitt)
         private val addNote = itemView.findViewById<ImageView>(R.id.fachAdd)
         private val notenListe = itemView.findViewById<RecyclerView>(R.id.fachNoten)
+        private val fachGewicht = itemView.findViewById<TextView>(R.id.fachGewicht)
 
 
         /* Bind properties */
@@ -39,9 +39,10 @@ class FachAdapter :
             val noten = fachAndNoten.noten
 
             // all values
-            card.setCardBackgroundColor(Color.parseColor(fach.farbe))
+            card.setCardBackgroundColor(fach.farbe)
             name.text = fach.name
             endNote.text = "${if (fach.beinhaltetNoten) fach.endnote else "N/A"} Punkte"
+            fachGewicht.text = if (fach.gewicht == 1) "" else "(x${fach.gewicht})"
 
             // set Padding at the bottom according to current state
             schnitt.apply {

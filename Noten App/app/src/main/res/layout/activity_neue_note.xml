@@ -67,8 +67,8 @@
             android:id="@+id/neueNoteDatum"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:ems="10"
-            android:hint="@string/inputDatumHint" />
+            android:hint="@string/inputDatumHint"
+            android:inputType="textNoSuggestions" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -86,8 +86,8 @@
             android:id="@+id/neueNoteNote"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:ems="10"
-            android:hint="@string/inputNoteHint" />
+            android:hint="@string/inputNoteHint"
+            android:inputType="textNoSuggestions" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -105,8 +105,8 @@
             android:id="@+id/neueNoteGewicht"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:ems="10"
-            android:hint="@string/inputGewichtHint" />
+            android:hint="@string/inputGewichtHint"
+            android:inputType="textNoSuggestions" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -123,8 +123,8 @@
             android:id="@+id/neueNoteArt"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:ems="10"
-            android:hint="@string/inputArtHint" />
+            android:hint="@string/inputArtHint"
+            android:inputType="textNoSuggestions" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -141,8 +141,8 @@
             android:id="@+id/neueNoteBemerkung"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:ems="10"
-            android:hint="@string/inputBemerkungHint" />
+            android:hint="@string/inputBemerkungHint"
+            android:inputType="textNoSuggestions" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.constraintlayout.widget.Guideline

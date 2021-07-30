@@ -6,109 +6,151 @@
     android:layout_height="match_parent"
     tools:context=".Settings">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/settingsAppbar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <ImageView
-        android:id="@+id/settingsCloseIcon"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:padding="10dp"
-        app:layout_constraintBottom_toBottomOf="@+id/settingsAppbar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/settingsAppbar"
-        app:srcCompat="@drawable/icon_close"
-        app:tint="@color/white_text" />
-
-    <ImageView
-        android:id="@+id/settingsAccept"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginEnd="5dp"
-        android:padding="10dp"
-        app:layout_constraintBottom_toBottomOf="@+id/settingsAppbar"
-        app:layout_constraintEnd_toEndOf="@+id/settingsAppbar"
-        app:layout_constraintTop_toTopOf="@+id/settingsAppbar"
-        app:srcCompat="@drawable/icon_accept"
-        app:tint="@color/white_text" />
-
-    <TextView
-        android:id="@+id/neueNoteTitel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/settingsTitel"
-        android:textColor="@color/white_text"
-        android:textSize="23sp"
-        app:layout_constraintBottom_toBottomOf="@+id/settingsAppbar"
-        app:layout_constraintEnd_toStartOf="@+id/settingsAccept"
-        app:layout_constraintStart_toEndOf="@+id/settingsCloseIcon"
-        app:layout_constraintTop_toTopOf="@+id/settingsAppbar" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/settingsNameInputLayout"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="7dp"
-        app:layout_constraintEnd_toStartOf="@+id/guideline13"
-        app:layout_constraintStart_toStartOf="@+id/guideline11"
-        app:layout_constraintTop_toBottomOf="@+id/settingsAppbar">
-
-        <EditText
-            android:id="@+id/settingsName"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:ems="10"
-            android:hint="@string/settingsNameInputText" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_height="wrap_content">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/settingsHalbjahrInputLayout"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="7dp"
-        app:layout_constraintEnd_toStartOf="@+id/guideline12"
-        app:layout_constraintStart_toStartOf="@+id/guideline13"
-        app:layout_constraintTop_toTopOf="@+id/settingsNameInputLayout">
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/settingsAppbar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorPrimary"
+                android:minHeight="?attr/actionBarSize"
+                android:theme="?attr/actionBarTheme"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <AutoCompleteTextView
-            android:id="@+id/settingsHalbjahr"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:ems="10"
-            android:hint="@string/settingsHalbjahrText" />
-    </com.google.android.material.textfield.TextInputLayout>
+            <TextView
+                android:id="@+id/neueNoteTitel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/settingsTitel"
+                android:textColor="@color/white_text"
+                android:textSize="23sp"
+                app:layout_constraintBottom_toBottomOf="@+id/settingsAppbar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/settingsAppbar" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline11"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_begin="15dp" />
+            <ImageView
+                android:id="@+id/settingsBackIcon"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:paddingLeft="10dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                app:layout_constraintBottom_toBottomOf="@+id/settingsAppbar"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/settingsAppbar"
+                app:srcCompat="@drawable/icon_back"
+                app:tint="@color/white_text" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline12"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_end="15dp" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/settingsNameInputLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="7dp"
+                app:layout_constraintEnd_toStartOf="@+id/guideline13"
+                app:layout_constraintStart_toStartOf="@+id/guideline11"
+                app:layout_constraintTop_toBottomOf="@+id/settingsAppbar">
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline13"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.6" />
+                <EditText
+                    android:id="@+id/settingsName"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/settingsNameInputText"
+                    android:inputType="textNoSuggestions" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/settingsHalbjahrInputLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="7dp"
+                app:layout_constraintEnd_toStartOf="@+id/guideline12"
+                app:layout_constraintStart_toStartOf="@+id/guideline13"
+                app:layout_constraintTop_toTopOf="@+id/settingsNameInputLayout">
+
+                <AutoCompleteTextView
+                    android:id="@+id/settingsHalbjahr"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/settingsHalbjahrText"
+                    android:inputType="textNoSuggestions" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/settingsFaecherlisteTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginEnd="50dp"
+                android:text="@string/settingsFaecherlisteTitel"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toStartOf="@+id/settingsAddFach"
+                app:layout_constraintStart_toStartOf="@+id/settingsNameInputLayout"
+                app:layout_constraintTop_toBottomOf="@+id/settingsNameInputLayout" />
+
+            <ImageView
+                android:id="@+id/settingsAddFach"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="7dp"
+                android:padding="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/settingsHalbjahrInputLayout"
+                app:srcCompat="@drawable/icon_add"
+                app:tint="@color/black" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/settingsFachliste"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:nestedScrollingEnabled="false"
+                app:layout_constraintEnd_toStartOf="@+id/guideline12"
+                app:layout_constraintStart_toStartOf="@+id/settingsFaecherlisteTitle"
+                app:layout_constraintTop_toBottomOf="@+id/settingsAddFach" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="15dp" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_end="15dp" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline13"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.6" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -20,4 +20,7 @@
     <string name="settingsTitel">Einstellungen</string>
     <string name="settingsNameInputText">Vorname Nachname</string>
     <string name="settingsHalbjahrText">Abschnitt</string>
+    <string name="settingsFaecherlisteTitel">Abschnitt Fächer</string>
+    <string name="settingsFachNameInput">Fachname</string>
+    <string name="settingsFachTextfarbText">Vorschau</string>
 </resources>

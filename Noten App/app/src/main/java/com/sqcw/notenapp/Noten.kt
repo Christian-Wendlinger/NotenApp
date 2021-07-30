@@ -51,24 +51,7 @@ class Noten : AppCompatActivity() {
         }
 
         // create new user data or read data
-        if (db.readMetaInformation().isEmpty()) initializeUserData(db)
-    }
-
-
-    // read userInformation and create new user if necessary
-    private suspend fun initializeUserData(db: NotenAppDao): MetaInformation {
-        val metaInformation = MetaInformation()
-        db.createMetaInformation(metaInformation)
-
-        // temporary
-        val testFaecher = listOf(
-            Fach(name = "Deutsch", farbe = "#ad0e00", halbjahr = "12/1"),
-            Fach(name = "Mathe", farbe = "#00277a", halbjahr = "12/1"),
-            Fach(name = "Englisch", farbe = "#c7c702", halbjahr = "12/1")
-        )
-        testFaecher.forEach { db.insertFach(it) }
-
-        return metaInformation
+        if (db.readMetaInformation().isEmpty()) db.createMetaInformation(MetaInformation())
     }
 
     // set Header data

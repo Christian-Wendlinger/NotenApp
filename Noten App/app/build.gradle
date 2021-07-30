@@ -63,4 +63,8 @@ dependencies {
     // lifecycleScope
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
+
+
+    // color picker library
+    implementation 'com.github.yukuku:ambilwarna:2.0.1'
 }
