@@ -130,17 +130,11 @@ private suspend fun calculateAbiturnote(context: Context) {
         return
     }
 
-    // Gesamtschnitt (alle Halbjahre)
-    val teilSchnitte = mutableListOf(
-        metaInformation.schnitt121,
-        metaInformation.schnitt122,
-        metaInformation.schnitt131,
-        metaInformation.schnitt132,
-        metaInformation.pruefungsSchnitt
-    ).filter { it != 0f }
 
     // not 0 exception since there must be at least 1 grade
-    val durchSchnittsNote = round(teilSchnitte.sum() / teilSchnitte.size).toInt()
+    val alleKursNoten = db.getAllFaecher().filter { it.beinhaltetNoten }
+        .map { Note(-1, "", it.endnote, 1f, "", "", -1) }
+    val durchSchnittsNote = round(calculateFachSchnitt(alleKursNoten)).toInt()
 
 
     // fill missing profil noten

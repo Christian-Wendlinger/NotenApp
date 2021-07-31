@@ -14,7 +14,6 @@ interface NotenAppDao {
     @Update
     suspend fun updateMetaInformation(metaInformation: MetaInformation)
 
-    @Transaction
     @Query("SELECT * FROM metainformation WHERE id = 0")
     suspend fun readMetaInformation(): List<MetaInformation>
 
@@ -30,9 +29,12 @@ interface NotenAppDao {
     suspend fun deleteFach(fach: Fach)
 
     // read specific Fach
-    @Transaction
     @Query("SELECT * FROM fach WHERE id = :id")
     suspend fun readFach(id: Int): List<Fach>
+
+    // Alle Fächer
+    @Query("SELECT * FROM Fach")
+    suspend fun getAllFaecher(): List<Fach>
 
 
     // Note
@@ -46,41 +48,34 @@ interface NotenAppDao {
     suspend fun deleteNote(note: com.sqcw.notenapp.db.entities.Note)
 
     // read specific Note
-    @Transaction
     @Query("SELECT * FROM note WHERE id = :id")
     suspend fun readNote(id: Int): List<com.sqcw.notenapp.db.entities.Note>
 
 
     // Relationen
     // Fach und Noten auslesen
-    @Transaction
     @Query("SELECT * FROM fach WHERE id = :fachId")
     suspend fun getFachMitNoten(fachId: Int): List<com.sqcw.notenapp.db.relations.FachAndNoten>
 
     // Alle Fächer für ein Halbjahr auslesen
-    @Transaction
     @Query("SELECT * FROM metainformation WHERE halbjahr = :halbjahr")
     suspend fun getHalbjahrMitFaecher(halbjahr: String): List<MetaInformationAndFaecher>
 
 
     // For Calculation of Abiturnote
     // Profilkurse
-    @Transaction
     @Query("SELECT * FROM fach WHERE profilFach")
     suspend fun getProfilKurse(): List<Fach>
 
     // Pflichtkurse ohne Profilfach
-    @Transaction
     @Query("SELECT * FROM fach WHERE pflichtFach AND NOT profilFach")
     suspend fun getPflichtKurse(): List<Fach>
 
     // Restliche Kurse
-    @Transaction
     @Query("SELECT * FROM fach WHERE NOT pflichtFach AND NOT profilFach")
     suspend fun getRestlicheKurse(): List<Fach>
 
     // Abiturnoten
-    @Transaction
     @Query("SELECT * FROM Fach WHERE halbjahr = 'Abitur'")
     suspend fun getAbiturNoten(): List<Fach>
 }
