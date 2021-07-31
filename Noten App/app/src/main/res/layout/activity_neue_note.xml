@@ -21,6 +21,7 @@
         android:id="@+id/neueNoteCloseIcon"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:layout_marginStart="5dp"
         android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="@+id/neueNoteAppbar"
         app:layout_constraintStart_toStartOf="parent"

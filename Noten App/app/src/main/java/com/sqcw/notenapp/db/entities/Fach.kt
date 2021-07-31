@@ -9,13 +9,14 @@ data class Fach(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     var name: String = "",
-    var farbe: Int = Color.BLACK,
-    val fachart: String = "Sonstige",
-    var gewicht: Int = 1,
+    var farbeHintergrund: Int = Color.parseColor("#006064"),
+    var farbeText: Int = Color.parseColor("#eeeeee"),
+    var profilFach: Boolean = false,
+    var pflichtFach: Boolean = false,
     val halbjahr: String,
     val klausurenSchnitt: Float = 0f,
     val sonstigeSchnitt: Float = 0f,
-    val schnitt: Float = 0f,
+    val gesamtSchnitt: Float = 0f,
     val endnote: Int = 0,
     val beinhaltetNoten: Boolean = false
 )

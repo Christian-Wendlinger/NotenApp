@@ -47,7 +47,7 @@ class Noten : AppCompatActivity() {
             adapter = FachAdapter()
 
             // prevent multiple itemDecorations
-            if (itemDecorationCount == 0) addItemDecoration(LinearSpacingManager(-50))
+            if (itemDecorationCount == 0) addItemDecoration(LinearSpacingManager(-35))
         }
 
         // create new user data or read data
@@ -80,7 +80,7 @@ class Noten : AppCompatActivity() {
                     if (metaInformation.schnitt132 == 0f) "N/A"
                     else "%.2f".format(metaInformation.schnitt132)
                 }"
-                else -> "Prüfungsschnitt: ${
+                else -> "Prüfungen: ${
                     if (metaInformation.pruefungsSchnitt == 0f) "N/A"
                     else "%.2f".format(metaInformation.pruefungsSchnitt)
                 }"
@@ -91,7 +91,7 @@ class Noten : AppCompatActivity() {
         findViewById<TextView>(R.id.notenAbischnittText).apply {
             text = "Abi-Note: ${
                 if (metaInformation.abiSchnitt == 0f) "N/A"
-                else "%.2f".format(metaInformation.abiSchnitt)
+                else "%.1f".format(metaInformation.abiSchnitt)
             }"
         }
 

@@ -10,7 +10,7 @@ import com.sqcw.notenapp.ChangeNote
 import com.sqcw.notenapp.R
 import com.sqcw.notenapp.db.entities.Note
 
-class NotenAdapter :
+class NotenAdapter(private val color: Int) :
     ListAdapter<Note, NotenAdapter.NotenViewHolder>(NotenDiffCallback) {
     /* ViewHolder for Items, takes in the inflated view and the onClick behavior. */
     inner class NotenViewHolder(itemView: View) :
@@ -24,10 +24,19 @@ class NotenAdapter :
             itemView.setOnLongClickListener(onLongClick)
 
             // initialize values
-            date.text = note.datum
-            punktzahl.text =
-                "${if (note.gewicht != 1f) "(x${note.gewicht})" else ""}    ${note.punktzahl}"
-            bemerkung.text = note.bemerkung
+            date.apply {
+                text = note.datum
+                setTextColor(color)
+            }
+            punktzahl.apply {
+                text =
+                    "${if (note.gewicht != 1f) "(x${note.gewicht})" else ""}    ${note.punktzahl}"
+                setTextColor(color)
+            }
+            bemerkung.apply {
+                text = note.bemerkung
+                setTextColor(color)
+            }
         }
     }
 

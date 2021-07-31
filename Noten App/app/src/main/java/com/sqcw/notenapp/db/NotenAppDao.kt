@@ -61,4 +61,26 @@ interface NotenAppDao {
     @Transaction
     @Query("SELECT * FROM metainformation WHERE halbjahr = :halbjahr")
     suspend fun getHalbjahrMitFaecher(halbjahr: String): List<MetaInformationAndFaecher>
+
+
+    // For Calculation of Abiturnote
+    // Profilkurse
+    @Transaction
+    @Query("SELECT * FROM fach WHERE profilFach")
+    suspend fun getProfilKurse(): List<Fach>
+
+    // Pflichtkurse ohne Profilfach
+    @Transaction
+    @Query("SELECT * FROM fach WHERE pflichtFach AND NOT profilFach")
+    suspend fun getPflichtKurse(): List<Fach>
+
+    // Restliche Kurse
+    @Transaction
+    @Query("SELECT * FROM fach WHERE NOT pflichtFach AND NOT profilFach")
+    suspend fun getRestlicheKurse(): List<Fach>
+
+    // Abiturnoten
+    @Transaction
+    @Query("SELECT * FROM Fach WHERE halbjahr = 'Abitur'")
+    suspend fun getAbiturNoten(): List<Fach>
 }

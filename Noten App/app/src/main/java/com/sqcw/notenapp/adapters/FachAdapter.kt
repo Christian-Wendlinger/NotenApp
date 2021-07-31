@@ -1,6 +1,7 @@
 package com.sqcw.notenapp.adapters
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.widget.ImageViewCompat
 import androidx.recyclerview.widget.*
 import com.sqcw.notenapp.AddNeueNote
 import com.sqcw.notenapp.R
@@ -27,7 +29,7 @@ class FachAdapter :
         private val schnitt = itemView.findViewById<TextView>(R.id.fachSchnitt)
         private val addNote = itemView.findViewById<ImageView>(R.id.fachAdd)
         private val notenListe = itemView.findViewById<RecyclerView>(R.id.fachNoten)
-        private val fachGewicht = itemView.findViewById<TextView>(R.id.fachGewicht)
+        private val fachAnnotations = itemView.findViewById<TextView>(R.id.fachGewicht)
 
 
         /* Bind properties */
@@ -39,14 +41,30 @@ class FachAdapter :
             val noten = fachAndNoten.noten
 
             // all values
-            card.setCardBackgroundColor(fach.farbe)
-            name.text = fach.name
-            endNote.text = "${if (fach.beinhaltetNoten) fach.endnote else "N/A"} Punkte"
-            fachGewicht.text = if (fach.gewicht == 1) "" else "(x${fach.gewicht})"
+            card.setCardBackgroundColor(fach.farbeHintergrund)
+            name.apply {
+                text = fach.name
+                setTextColor(fach.farbeText)
+            }
+
+            endNote.apply {
+                text = "${if (fach.beinhaltetNoten) fach.endnote else "N/A"} Punkte"
+                setTextColor(fach.farbeText)
+            }
+
+            fachAnnotations.apply {
+                var annotation = ""
+                if (fach.profilFach) annotation += "(x2)"
+                if (fach.pflichtFach) annotation += " P"
+
+                text = annotation
+                setTextColor(fach.farbeText)
+            }
 
             // set Padding at the bottom according to current state
             schnitt.apply {
-                text = if (fach.beinhaltetNoten) "%.2f".format(fach.schnitt) else "N/A"
+                text = if (fach.beinhaltetNoten) "%.2f".format(fach.gesamtSchnitt) else "N/A"
+                setTextColor(fach.farbeText)
 
                 // set Padding in Dp
                 setPadding(
@@ -67,10 +85,14 @@ class FachAdapter :
             }
 
             // switch to new screen
-            addNote.setOnClickListener {
-                val intent = Intent(itemView.context, AddNeueNote::class.java)
-                intent.putExtra("id", fach.id)
-                itemView.context.startActivity(intent)
+            addNote.apply {
+                ImageViewCompat.setImageTintList(this, ColorStateList.valueOf(fach.farbeText))
+
+                setOnClickListener {
+                    val intent = Intent(itemView.context, AddNeueNote::class.java)
+                    intent.putExtra("id", fach.id)
+                    itemView.context.startActivity(intent)
+                }
             }
 
             // set up notenListe
@@ -90,10 +112,15 @@ class FachAdapter :
                 if (klausurNoten.isNotEmpty()) {
                     // initialize Adapters with data
                     val headlineKlausurenAdapter =
-                        NotenHeaderAdapter(context, "Klausuren", fach.klausurenSchnitt)
+                        NotenHeaderAdapter(
+                            context,
+                            "Klausuren",
+                            fach.klausurenSchnitt,
+                            fach.farbeText
+                        )
 
                     // create Adapter and set data for Klausurnoten
-                    val klausurenAdapter = NotenAdapter()
+                    val klausurenAdapter = NotenAdapter(fach.farbeText)
                     klausurenAdapter.submitList(klausurNoten)
 
                     // add Adapters
@@ -104,10 +131,15 @@ class FachAdapter :
                 if (sonstigeNoten.isNotEmpty()) {
                     // initialize Adapters with data
                     val headlineNormaleNotenAdapter =
-                        NotenHeaderAdapter(context, "Normale Noten", fach.sonstigeSchnitt)
+                        NotenHeaderAdapter(
+                            context,
+                            "Normale Noten",
+                            fach.sonstigeSchnitt,
+                            fach.farbeText
+                        )
 
                     // create Adapter and set data for normale Noten
-                    val normaleNotenAdapter = NotenAdapter()
+                    val normaleNotenAdapter = NotenAdapter(fach.farbeText)
                     normaleNotenAdapter.submitList(sonstigeNoten)
 
                     // add Adapters

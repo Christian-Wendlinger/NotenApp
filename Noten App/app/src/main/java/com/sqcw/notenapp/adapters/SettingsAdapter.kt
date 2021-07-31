@@ -2,23 +2,30 @@ package com.sqcw.notenapp.adapters
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Context
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.EditText
-import android.widget.Toast
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.skydoves.colorpickerview.ColorPickerDialog
+import com.skydoves.colorpickerview.flag.BubbleFlag
+import com.skydoves.colorpickerview.flag.FlagMode
+import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
 import com.sqcw.notenapp.R
 import com.sqcw.notenapp.db.NotenAppDao
 import com.sqcw.notenapp.db.entities.Fach
+import com.sqcw.notenapp.util.updateDb
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import yuku.ambilwarna.AmbilWarnaDialog
+
 
 class SettingsAdapter(private val db: NotenAppDao) :
     ListAdapter<Fach, SettingsAdapter.SettingsViewHolder>(SettingsDiffCallback) {
@@ -26,58 +33,111 @@ class SettingsAdapter(private val db: NotenAppDao) :
     /* ViewHolder for Items, takes in the inflated view and the onClick behavior. */
     inner class SettingsViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
-        private val card = itemView.findViewById<CardView>(R.id.settingsFachCard)
+        private val cardColor = itemView.findViewById<CardView>(R.id.settingsFachCard)
+        private val changeHintergrund = itemView.findViewById<TextView>(R.id.changeHintergrundFarbe)
+        private val changeText =
+            itemView.findViewById<TextView>(R.id.changeTextFarbe)
         private val fachNameInput = itemView.findViewById<EditText>(R.id.settingsFachName)
-        private val gewicht = itemView.findViewById<EditText>(R.id.settingsFachGewicht)
+        private val deleteIcon = itemView.findViewById<ImageView>(R.id.settingsFachDeleteIcon)
+        private val deleteText = itemView.findViewById<TextView>(R.id.settingsFachDeleteText)
+        private val profilFachCheckBox = itemView.findViewById<CheckBox>(R.id.checkBoxProfilfach)
+        private val pflichtFachCheckBox = itemView.findViewById<CheckBox>(R.id.checkBoxPflichtNote)
 
         /* Bind properties */
         @SuppressLint("ClickableViewAccessibility")
         fun bind(fach: Fach) {
-            // handle color
-            card.apply {
-                setCardBackgroundColor(fach.farbe)
+            // delete
+            deleteIcon.setOnClickListener {
+                createDeleteDialog(fach, itemView.context)
+            }
+            deleteText.setOnClickListener {
+                createDeleteDialog(fach, itemView.context)
+            }
+
+            // set checkbox profilfach
+            profilFachCheckBox.apply {
+                isChecked = fach.profilFach
 
                 setOnClickListener {
-                    val dialog = AmbilWarnaDialog(context, fach.farbe, object :
-                        AmbilWarnaDialog.OnAmbilWarnaListener {
-                        override fun onCancel(dialog: AmbilWarnaDialog?) {}
+                    fach.profilFach = isChecked
+                }
+            }
 
-                        override fun onOk(dialog: AmbilWarnaDialog, color: Int) {
-                            GlobalScope.launch {
-                                // remove from db
-                                db.updateFach(fach.copy(farbe = color))
+            // set checkbox profilfach
+            pflichtFachCheckBox.apply {
+                isChecked = fach.pflichtFach
 
-                                // assign new values
-                                val dbList = db.getHalbjahrMitFaecher(fach.halbjahr)
-                                val newList =
-                                    if (dbList.isEmpty()) emptyList() else dbList[0].faecher.reversed()
-                                submitList(newList)
-                            }
-                        }
-                    })
+                setOnClickListener {
+                    fach.pflichtFach = isChecked
+                }
+            }
+
+
+            // handle upper Card and background color change
+            cardColor.apply {
+                setCardBackgroundColor(fach.farbeHintergrund)
+            }
+
+            // text color of upper card
+            changeHintergrund.apply {
+                setTextColor(fach.farbeText)
+
+                setOnClickListener {
+                    // Create Flag
+                    val bubbleFlag = BubbleFlag(context)
+                    bubbleFlag.flagMode = FlagMode.ALWAYS
+
+                    // Create Custom Dialog
+                    val dialog = ColorPickerDialog.Builder(context)
+                        .setTitle("Hintergrundfarbe auswählen")
+                        .attachAlphaSlideBar(false)
+                        .attachBrightnessSlideBar(true)
+                        .setPositiveButton("BESTÄTIGEN",
+                            ColorEnvelopeListener { envelope, _ ->
+                                fach.farbeHintergrund = envelope.color
+                                cardColor.setCardBackgroundColor(envelope.color)
+                            })
+
+                        .setNegativeButton(
+                            "ABBRECHEN"
+                        ) { dialog, _ -> dialog.dismiss() }
+
+                    // set Flag to Dialog and Show it
+                    dialog.colorPickerView.flagView = bubbleFlag
+                    dialog.colorPickerView.setInitialColor(fach.farbeHintergrund)
                     dialog.show()
                 }
             }
 
-            // handle weight changes
-            gewicht.apply {
-                setText(fach.gewicht.toString())
+            // text color of lower card
+            changeText.apply {
+                setTextColor(fach.farbeText)
 
-                doOnTextChanged { text, _, _, _ ->
-                    // check gewicht
-                    val input = text.toString()
-                    if (input == "") return@doOnTextChanged
+                setOnClickListener {
+                    // Create Flag
+                    val bubbleFlag = BubbleFlag(context)
+                    bubbleFlag.flagMode = FlagMode.ALWAYS
 
-                    val checkedGewicht: Int? = input.toIntOrNull()
-                    if (checkedGewicht == null || checkedGewicht <= 0) {
-                        Toast.makeText(
-                            context,
-                            "Gewicht muss eine ganze Zahl > 0 sein!",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        return@doOnTextChanged
-                    }
-                    fach.gewicht = checkedGewicht
+                    // Create Custom Dialog
+                    val dialog = ColorPickerDialog.Builder(context)
+                        .setTitle("Textfarbe auswählen")
+                        .attachAlphaSlideBar(false)
+                        .attachBrightnessSlideBar(true)
+                        .setPositiveButton("BESTÄTIGEN",
+                            ColorEnvelopeListener { envelope, _ ->
+                                fach.farbeText = envelope.color
+                                setTextColor(envelope.color)
+                                changeHintergrund.setTextColor(envelope.color)
+                            })
+
+                        .setNegativeButton(
+                            "ABBRECHEN"
+                        ) { dialog, _ -> dialog.dismiss() }
+
+                    // set Flag to Dialog and Show it
+                    dialog.colorPickerView.flagView = bubbleFlag
+                    dialog.colorPickerView.setInitialColor(fach.farbeText)
+                    dialog.show()
                 }
             }
 
@@ -89,49 +149,37 @@ class SettingsAdapter(private val db: NotenAppDao) :
                 doOnTextChanged { text, _, _, _ ->
                     fach.name = text.toString()
                 }
-
-                setOnTouchListener { _, event ->
-                    if (event.action == MotionEvent.ACTION_DOWN) {
-                        if (event.rawX >= (right - compoundDrawables[2].bounds.width())) {
-                            // your action here
-
-                            // open Dialog
-                            val alertDialog = AlertDialog.Builder(context).create()
-                            alertDialog.setTitle("Löschen")
-                            alertDialog.setMessage("Fach ${fach.name} in Abschnitt ${fach.halbjahr} löschen?")
-
-                            // remove
-                            alertDialog.setButton(
-                                AlertDialog.BUTTON_POSITIVE,
-                                "BESTÄTIGEN"
-                            ) { dialog, _ ->
-                                GlobalScope.launch {
-                                    // remove from db
-                                    db.deleteFach(fach)
-
-                                    // assign new values
-                                    val dbList = db.getHalbjahrMitFaecher(fach.halbjahr)
-                                    val newList =
-                                        if (dbList.isEmpty()) emptyList() else dbList[0].faecher.reversed()
-                                    submitList(newList)
-                                }
-                                dialog.dismiss()
-                            }
-
-                            // close dialog and no changes
-                            alertDialog.setButton(
-                                AlertDialog.BUTTON_NEGATIVE,
-                                "ABBRECHEN"
-                            ) { dialog, _ -> dialog.dismiss() }
-
-                            // show dialog
-                            alertDialog.show()
-                            return@setOnTouchListener true
-                        }
-                    }
-                    return@setOnTouchListener false
-                }
             }
+        }
+
+        private suspend fun submitNewList(fach: Fach) {
+            val newItems = db.getHalbjahrMitFaecher(fach.halbjahr)
+            val toSubmit = if (newItems.isEmpty()) emptyList() else newItems[0].faecher
+            submitList(toSubmit.reversed())
+        }
+
+        // Dialog for delete
+        private fun createDeleteDialog(fach: Fach, context: Context) {
+            val dialog = AlertDialog.Builder(context).create()
+            dialog.setTitle("Löschen")
+            dialog.setMessage("Möchtest du das Fach ${fach.name} in ${fach.halbjahr} löschen?")
+            dialog.setButton(AlertDialog.BUTTON_POSITIVE, "BESTÄTGEN") { dia, _ ->
+                GlobalScope.launch {
+                    currentList.forEach { db.updateFach(it) }
+                    db.deleteFach(fach)
+
+                    // update database to make sure that everything is consistent after delete
+                    updateDb(context, fach.copy(id = -1), fach.halbjahr)
+
+                    // notify list about deleted item
+                    submitNewList(fach)
+                }
+                dia.dismiss()
+            }
+            dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "ABBRECHEN") { dia, _ ->
+                dia.dismiss()
+            }
+            dialog.show()
         }
     }
 

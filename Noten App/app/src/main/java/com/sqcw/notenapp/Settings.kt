@@ -14,7 +14,7 @@ import com.sqcw.notenapp.db.entities.Fach
 import kotlinx.coroutines.launch
 
 class Settings : AppCompatActivity() {
-    private val halbJahre = arrayOf("12/1", "12/2", "13/1", "13/2", "Abitur")
+    private val halbjahre = arrayOf("12/1", "12/2", "13/1", "13/2", "Abitur")
     private var currentUsername = ""
     private lateinit var settingsAdapter: SettingsAdapter
 
@@ -41,7 +41,7 @@ class Settings : AppCompatActivity() {
                 ArrayAdapter(
                     context,
                     R.layout.support_simple_spinner_dropdown_item,
-                    halbJahre
+                    halbjahre
                 )
             )
 
@@ -51,18 +51,21 @@ class Settings : AppCompatActivity() {
                     // Change Views
                     val newMetaInformation =
                         db.readMetaInformation()[0].copy(halbjahr = adapter.getItem(pos).toString())
+                    db.updateMetaInformation(newMetaInformation)
+
+                    // update Title of Fachliste
                     rootView.findViewById<TextView>(R.id.settingsFaecherlisteTitle).apply {
                         text = "Fächer in ${newMetaInformation.halbjahr}"
                     }
 
                     // update Info in DB
-                    db.updateMetaInformation(newMetaInformation)
+                    saveData(db)
                     updateFachListe(db)
 
                     // Notify User about change
                     Toast.makeText(
                         applicationContext,
-                        "Halbjahr für Bearbeitung auf ${newMetaInformation.halbjahr} gewechselt!",
+                        "Einstellungen gespeichert und halbjahr zu ${newMetaInformation.halbjahr} gewechselt!",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -106,11 +109,15 @@ class Settings : AppCompatActivity() {
             setOnClickListener {
                 // add new item to temporary list and update recyclerview
                 lifecycleScope.launch {
+                    // save current changes -> add new Fach -> update
+                    saveData(db)
                     db.insertFach(
                         Fach(
                             halbjahr = db.readMetaInformation()[0].halbjahr
                         )
                     )
+
+                    // update database to make sure that everything is consistent after delete
                     updateFachListe(db)
                 }
             }
@@ -120,14 +127,7 @@ class Settings : AppCompatActivity() {
         findViewById<ImageView>(R.id.settingsBackIcon).apply {
             setOnClickListener {
                 lifecycleScope.launch {
-                    // update current metaInformation
-                    val newMetaInformation =
-                        db.readMetaInformation()[0].copy(name = currentUsername)
-                    db.updateMetaInformation(newMetaInformation)
-
-                    // update fachListe
-                    val currentItems = settingsAdapter.currentList
-                    currentItems.forEach { db.updateFach(it) }
+                    saveData(db)
 
                     // notify user about changes and close
                     Toast.makeText(
@@ -147,5 +147,15 @@ class Settings : AppCompatActivity() {
         val data = db.getHalbjahrMitFaecher(metaInformation.halbjahr)
         val newList = if (data.isEmpty()) emptyList() else data[0].faecher
         settingsAdapter.submitList(newList.reversed())
+    }
+
+    private suspend fun saveData(db: NotenAppDao) {
+        // update metaInformation
+        val newMetaInformation =
+            db.readMetaInformation()[0].copy(name = currentUsername)
+        db.updateMetaInformation(newMetaInformation)
+
+        // update fachListe
+        settingsAdapter.currentList.forEach { db.updateFach(it) }
     }
 }

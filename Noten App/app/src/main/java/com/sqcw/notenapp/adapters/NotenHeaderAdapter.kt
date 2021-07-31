@@ -11,11 +11,13 @@ import com.sqcw.notenapp.R
 class NotenHeaderAdapter internal constructor(
     context: Context?,
     title: String,
-    schnitt: Float
+    schnitt: Float,
+    color: Int
 ) :
     RecyclerView.Adapter<NotenHeaderAdapter.ViewHolder>() {
     private val title: String = title
     private var schnitt: Float = schnitt
+    private val color: Int = color
     private val inflater: LayoutInflater = LayoutInflater.from(context)
 
     // inflates the cell layout from xml when needed
@@ -35,6 +37,7 @@ class NotenHeaderAdapter internal constructor(
         holder.itemView.apply {
             findViewById<TextView>(R.id.notenHeadline).apply {
                 text = "$title — ${"%.2f".format(schnitt)}"
+                setTextColor(color)
             }
         }
     }

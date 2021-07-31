@@ -66,5 +66,5 @@ dependencies {
 
 
     // color picker library
-    implementation 'com.github.yukuku:ambilwarna:2.0.1'
+    implementation "com.github.skydoves:colorpickerview:2.2.3"
 }
