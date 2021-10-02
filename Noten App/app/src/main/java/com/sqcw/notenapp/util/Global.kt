@@ -51,7 +51,8 @@ private suspend fun updateFachInDb(
     } else {
         klausurenSchnitt = calculateFachSchnitt(klausuren)
         sonstigeSchnitt = calculateFachSchnitt(sonstige)
-        gesamtSchnitt = (klausurenSchnitt + sonstigeSchnitt) / 2
+        gesamtSchnitt =
+            (klausurenSchnitt * fach.klausurenGewicht + sonstigeSchnitt * fach.sonstigeGewicht) / (fach.klausurenGewicht + fach.sonstigeGewicht)
     }
 
 

@@ -8,14 +8,14 @@
         android:id="@+id/settingsFachCard"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         app:cardBackgroundColor="@color/black"
         app:cardCornerRadius="15dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/settingsFachDeleteIcon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline14"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="@+id/settingsFachNameLayout">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -59,8 +59,8 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="30dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="10dp"
         app:layout_constraintEnd_toStartOf="@+id/settingsFachCard"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -88,17 +88,56 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.35" />
 
-    <CheckBox
-        android:id="@+id/checkBoxProfilfach"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/settingsKlausurGewichtInputLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="7dp"
         android:layout_marginEnd="10dp"
-        android:buttonTint="@color/main"
-        android:text="Profilfach"
         app:layout_constraintEnd_toStartOf="@+id/guideline15"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/settingsFachNameLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/settingsFachNameLayout">
+
+        <EditText
+            android:id="@+id/settingsKlausurGewicht"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="Klausuren"
+            android:inputType="textNoSuggestions"
+            app:drawableTint="@color/black" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/settingsSonstigeGewichtInputLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/checkBoxPflichtNote"
+        app:layout_constraintStart_toStartOf="@+id/guideline15"
+        app:layout_constraintTop_toTopOf="@+id/settingsKlausurGewichtInputLayout">
+
+        <EditText
+            android:id="@+id/settingsSonstigeGewicht"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="Sonstige"
+            android:inputType="textNoSuggestions"
+            app:drawableTint="@color/black" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <CheckBox
+        android:id="@+id/checkBoxProfilfach"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:buttonTint="@color/main"
+        android:text="Profilfach"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline15"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/settingsKlausurGewichtInputLayout" />
 
     <CheckBox
         android:id="@+id/checkBoxPflichtNote"
@@ -107,20 +146,18 @@
         android:layout_marginEnd="10dp"
         android:buttonTint="@color/main"
         android:text="Pflichtnote"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/guideline15"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/checkBoxProfilfach" />
+        app:layout_constraintEnd_toStartOf="@+id/guideline14"
+        app:layout_constraintStart_toStartOf="@+id/guideline15"
+        app:layout_constraintTop_toTopOf="@+id/checkBoxProfilfach" />
 
     <ImageView
         android:id="@+id/settingsFachDeleteIcon"
         android:layout_width="35dp"
         android:layout_height="35dp"
-        android:layout_marginStart="8dp"
         android:padding="5dp"
         app:layout_constraintBottom_toBottomOf="@+id/checkBoxProfilfach"
-        app:layout_constraintStart_toStartOf="@+id/guideline15"
-        app:layout_constraintTop_toBottomOf="@+id/settingsFachNameLayout"
+        app:layout_constraintStart_toStartOf="@+id/settingsFachCard"
+        app:layout_constraintTop_toBottomOf="@+id/settingsSonstigeGewichtInputLayout"
         app:srcCompat="@drawable/icon_delete"
         app:tint="@color/black" />
 

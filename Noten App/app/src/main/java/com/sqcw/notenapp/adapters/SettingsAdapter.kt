@@ -38,6 +38,8 @@ class SettingsAdapter(private val db: NotenAppDao) :
         private val changeText =
             itemView.findViewById<TextView>(R.id.changeTextFarbe)
         private val fachNameInput = itemView.findViewById<EditText>(R.id.settingsFachName)
+        private val klausurenGewicht = itemView.findViewById<EditText>(R.id.settingsKlausurGewicht)
+        private val sonstigeGewicht = itemView.findViewById<EditText>(R.id.settingsSonstigeGewicht)
         private val deleteIcon = itemView.findViewById<ImageView>(R.id.settingsFachDeleteIcon)
         private val deleteText = itemView.findViewById<TextView>(R.id.settingsFachDeleteText)
         private val profilFachCheckBox = itemView.findViewById<CheckBox>(R.id.checkBoxProfilfach)
@@ -52,6 +54,25 @@ class SettingsAdapter(private val db: NotenAppDao) :
             }
             deleteText.setOnClickListener {
                 createDeleteDialog(fach, itemView.context)
+            }
+
+            // Gewichte
+            klausurenGewicht.apply {
+                setText(fach.klausurenGewicht.toString())
+
+                doOnTextChanged { text, _, _, _ ->
+                    val newWeight = text.toString().toIntOrNull() ?: return@doOnTextChanged
+                    fach.klausurenGewicht = newWeight
+                }
+            }
+
+            sonstigeGewicht.apply {
+                setText(fach.sonstigeGewicht.toString())
+
+                doOnTextChanged { text, _, _, _ ->
+                    val newWeight = text.toString().toIntOrNull() ?: return@doOnTextChanged
+                    fach.sonstigeGewicht = newWeight
+                }
             }
 
             // set checkbox profilfach

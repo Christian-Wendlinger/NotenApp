@@ -13,6 +13,8 @@ data class Fach(
     var farbeText: Int = Color.parseColor("#eeeeee"),
     var profilFach: Boolean = false,
     var pflichtFach: Boolean = false,
+    var klausurenGewicht: Int = 1,
+    var sonstigeGewicht: Int = 1,
     val halbjahr: String,
     val klausurenSchnitt: Float = 0f,
     val sonstigeSchnitt: Float = 0f,
