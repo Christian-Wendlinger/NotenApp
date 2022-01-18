@@ -5,6 +5,7 @@ import com.sqcw.notenapp.db.NotenAppDatabase
 import com.sqcw.notenapp.db.entities.Fach
 import com.sqcw.notenapp.db.entities.Note
 import kotlin.math.round
+import kotlin.math.roundToInt
 
 // update database after change
 suspend fun updateDb(
@@ -63,7 +64,7 @@ private suspend fun updateFachInDb(
             klausurenSchnitt = klausurenSchnitt,
             sonstigeSchnitt = sonstigeSchnitt,
             gesamtSchnitt = gesamtSchnitt,
-            endnote = round(gesamtSchnitt).toInt()
+            endnote = gesamtSchnitt.roundToInt()
         )
     )
 }
